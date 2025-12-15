@@ -2,3 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import pixel-editor styles */
+@import '@/style.css';
+

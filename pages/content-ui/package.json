@@ -21,10 +21,10 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@extension/shared": "workspace:*",
-    "@extension/ui": "workspace:*",
     "@extension/env": "workspace:*",
-    "@extension/pixel-editor": "workspace:*"
+    "@extension/pixel-editor": "workspace:*",
+    "@extension/shared": "workspace:*",
+    "@extension/ui": "workspace:*"
   },
   "devDependencies": {
     "@extension/hmr": "workspace:*",

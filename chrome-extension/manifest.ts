@@ -39,7 +39,6 @@ const manifest = {
     {
       matches: ['https://wplace.live/*'],
       js: ['content/wplace.iife.js', 'content-ui/editor.iife.js'],
-      css: ['content-ui/editor.css'],
     },
     // {
     //   matches: ['http://*/*', 'https://*/*', '<all_urls>'],

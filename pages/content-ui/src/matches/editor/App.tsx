@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { eventBus } from '@extension/shared'
 import { PixelEditor, postMessageBridge } from '@extension/pixel-editor'
-import '@extension/pixel-editor/style.css'
 import type { LoadTilePayload } from '@extension/pixel-editor'
 
 export default function App() {
@@ -9,6 +8,26 @@ export default function App() {
   const [tileCoords, setTileCoords] = useState<{ x: number; y: number } | null>(
     null,
   )
+
+  // Dynamically inject/remove CSS when editor visibility changes
+  useEffect(() => {
+    if (!isVisible) return
+
+    // Inject CSS
+    const linkElement = document.createElement('link')
+    linkElement.rel = 'stylesheet'
+    linkElement.href = chrome.runtime.getURL('content-ui/editor.css')
+    linkElement.id = 'pixel-editor-styles'
+    document.head.appendChild(linkElement)
+
+    return () => {
+      // Remove CSS when editor closes
+      const existingLink = document.getElementById('pixel-editor-styles')
+      if (existingLink) {
+        existingLink.remove()
+      }
+    }
+  }, [isVisible])
 
   useEffect(() => {
     console.log('🎨 Content ui editor loaded')
