@@ -1,12 +1,12 @@
-import { fixupConfigRules } from '@eslint/compat'
-import { FlatCompat } from '@eslint/eslintrc'
-import js from '@eslint/js'
 import { flatConfigs as importXFlatConfig } from 'eslint-plugin-import-x'
 import jsxA11y from 'eslint-plugin-jsx-a11y'
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
 import reactPlugin from 'eslint-plugin-react'
 import { browser, es2020, node } from 'globals'
 import { configs as tsConfigs, parser as tsParser } from 'typescript-eslint'
+import js from '@eslint/js'
+import { FlatCompat } from '@eslint/eslintrc'
+import { fixupConfigRules } from '@eslint/compat'
 import type { FixupConfigArray } from '@eslint/compat'
 
 export default [
@@ -63,7 +63,7 @@ export default [
       'react/prop-types': 'off',
       'prefer-const': 'error',
       'no-var': 'error',
-      'func-style': ['error', 'expression', { allowArrowFunctions: true }],
+      'func-style': ['off', 'expression', { allowArrowFunctions: true }],
       'no-restricted-imports': [
         'error',
         {
@@ -121,6 +121,15 @@ export default [
     files: ['**/packages/shared/**/*.ts'],
     rules: {
       'no-restricted-imports': 'off',
+    },
+  },
+  {
+    files: [
+      '**/packages/hmr/lib/injections/*.ts',
+      '**/packages/i18n/lib/prepare-build.ts',
+    ],
+    rules: {
+      'import-x/newline-after-import': 'off',
     },
   },
 ]

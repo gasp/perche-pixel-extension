@@ -4,10 +4,6 @@ import type { ManifestType } from '@extension/shared'
 const packageJson = JSON.parse(readFileSync('./package.json', 'utf8'))
 
 /**
- * @prop default_locale
- * if you want to support multiple languages, you can use the following reference
- * https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Internationalization
- *
  * @prop browser_specific_settings
  * Must be unique to your extension to upload to addons.mozilla.org
  * (you can delete if you only want a chrome extension)
@@ -20,8 +16,7 @@ const packageJson = JSON.parse(readFileSync('./package.json', 'utf8'))
  */
 const manifest = {
   manifest_version: 3,
-  default_locale: 'en',
-  name: '__MSG_extensionName__',
+  name: 'Perche Pixel Extension',
   browser_specific_settings: {
     gecko: {
       id: 'example@example.com',
@@ -29,7 +24,7 @@ const manifest = {
     },
   },
   version: packageJson.version,
-  description: '__MSG_extensionDescription__',
+  description: 'Chrome extension for pixel drawing on wplace.live',
   host_permissions: ['<all_urls>'],
   permissions: ['storage', 'scripting', 'tabs', 'notifications'],
   options_page: 'options/index.html',

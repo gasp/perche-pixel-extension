@@ -1,6 +1,5 @@
-import { t } from '@extension/i18n'
-import { ToggleButton } from '@extension/ui'
 import { useEffect } from 'react'
+import { ToggleButton } from '@extension/ui'
 
 export default function App() {
   useEffect(() => {
@@ -16,7 +15,7 @@ export default function App() {
         </strong>{' '}
         and save to reload.
       </div>
-      <ToggleButton className={'mt-0'}>{t('toggleTheme')}</ToggleButton>
+      <ToggleButton className={'mt-0'}>Toggle Theme</ToggleButton>
     </div>
   )
 }

@@ -225,16 +225,6 @@ importers:
         specifier: ^8.18.2
         version: 8.18.3
 
-  packages/i18n:
-    dependencies:
-      '@extension/env':
-        specifier: workspace:*
-        version: link:../env
-    devDependencies:
-      '@extension/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
-
   packages/module-manager:
     devDependencies:
       '@extension/dev-utils':
@@ -334,9 +324,6 @@ importers:
 
   packages/ui:
     dependencies:
-      '@extension/i18n':
-        specifier: workspace:*
-        version: link:../i18n
       '@extension/shared':
         specifier: workspace:*
         version: link:../shared
@@ -440,9 +427,6 @@ importers:
       '@extension/env':
         specifier: workspace:*
         version: link:../../packages/env
-      '@extension/i18n':
-        specifier: workspace:*
-        version: link:../../packages/i18n
       '@extension/pixel-editor':
         specifier: workspace:*
         version: link:../../packages/pixel-editor
@@ -468,9 +452,6 @@ importers:
 
   pages/options:
     dependencies:
-      '@extension/i18n':
-        specifier: workspace:*
-        version: link:../../packages/i18n
       '@extension/shared':
         specifier: workspace:*
         version: link:../../packages/shared
