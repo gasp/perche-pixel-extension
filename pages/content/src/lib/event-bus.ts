@@ -31,6 +31,14 @@ export type ContentEventMap = {
     key: string
     value: unknown
   }
+  'fetch:intercepted': {
+    url: string
+    contentType: string
+    data: unknown
+    method: string
+    status: number
+    statusText: string
+  }
 }
 
 export type ContentEventType = keyof ContentEventMap

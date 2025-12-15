@@ -33,9 +33,9 @@ const findPaintButton = (container: HTMLElement): HTMLElement | null => {
 /**
  * Create the Editor button with matching styles
  */
-const createEditorButton = (isLarge: boolean): HTMLButtonElement => {
+const createEditorButton = (): HTMLButtonElement => {
   const button = document.createElement('button')
-  button.className = `btn btn-primary btn-soft ${isLarge ? 'btn-lg ml-2' : ''}`
+  button.className = 'btn btn-primary btn-soft'
   button.setAttribute('data-editor-btn', 'true')
 
   // Add SVG icon (using a pencil/edit icon)
@@ -79,9 +79,13 @@ const addEditorButton = (modalContainer: HTMLElement): void => {
     return
   }
 
-  const isLarge = !!modalContainer.querySelector('#color-1')
+  // it's in color picker
+  if (modalContainer.querySelector('#color-1')) {
+    console.log('[CEB] Color picker detected, not adding Editor button')
+    return
+  }
   // Create the Editor button
-  const editorButton = createEditorButton(isLarge)
+  const editorButton = createEditorButton()
 
   // Insert the button after the Paint button
   paintButton.parentElement?.insertBefore(editorButton, paintButton.nextSibling)

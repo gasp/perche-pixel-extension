@@ -33,8 +33,8 @@ const configs = Object.entries(getContentScriptEntries(matchesDir)).map(
     }),
 )
 
-// Add build config for injected script (runs in page context)
-const injectedConfig = withPageConfig({
+// Add build configs for injected scripts (run in page context)
+const mapHijackInjectedConfig = withPageConfig({
   mode: IS_DEV ? 'development' : undefined,
   resolve: {
     alias: {
@@ -53,7 +53,30 @@ const injectedConfig = withPageConfig({
   },
 })
 
-const builds = [...configs, injectedConfig].map(async config => {
+const fetchHijackInjectedConfig = withPageConfig({
+  mode: IS_DEV ? 'development' : undefined,
+  resolve: {
+    alias: {
+      '@src': srcDir,
+    },
+  },
+  build: {
+    lib: {
+      name: 'fetchHijackInjected',
+      formats: ['iife'],
+      entry: resolve(injectedDir, 'fetch-hijack-injected.ts'),
+      fileName: 'fetch-hijack-injected',
+    },
+    outDir: resolve(rootDir, '..', '..', 'dist', 'content'),
+    emptyOutDir: false, // Critical: prevent race condition with concurrent builds
+  },
+})
+
+const builds = [
+  ...configs,
+  mapHijackInjectedConfig,
+  fetchHijackInjectedConfig,
+].map(async config => {
   //@ts-expect-error This is hidden property into vite's resolveConfig()
   config.configFile = false
   await build(config)

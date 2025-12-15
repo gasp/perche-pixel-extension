@@ -1,25 +1,51 @@
-// Spys on "spontaneous" fetch requests made by the client
-const originalFetch = window.fetch // Saves a copy of the original fetch
+import { eventBus } from '@src/lib/event-bus'
 
+/**
+ * Hijacks window.fetch to intercept network requests
+ *
+ * IMPORTANT: This must be injected into the page context (not content script context)
+ * because content scripts run in an isolated JavaScript environment and cannot
+ * intercept the page's fetch calls.
+ *
+ * This function injects a web-accessible resource script into the page to bypass CSP.
+ */
 export const hijackFetch = () => {
-  console.log('🎯 hijacking fetch')
-  // Overrides fetch
-  window.fetch = async function (...args) {
-    console.log('fetch args', args)
-    const response = await originalFetch.apply(this, args) // Sends a fetch
-    const cloned = response.clone() // Makes a copy of the response
+  console.log('🎯 Injecting fetch hijack into page context')
 
-    console.log('cloned', cloned)
-    // Retrieves the endpoint name. Unknown endpoint = "ignore"
-    const endpointName =
-      (args[0] instanceof Request ? args[0]?.url : args[0]) || 'ignore'
-
-    // Check Content-Type to only process JSON
-    const contentType = cloned.headers.get('content-type') || ''
-    if (contentType.includes('application/json')) {
-      // Since this code does not run in the userscript, we can't use consoleLog().
-      console.log(`Sending JSON message about endpoint "${endpointName}"`)
-    }
-    return response // Returns the original response
+  // Create a script element that loads from web_accessible_resources
+  const script = document.createElement('script')
+  script.src = chrome.runtime.getURL('content/fetch-hijack-injected.iife.js')
+  script.onload = () => {
+    console.log('🎯 Fetch hijack script loaded successfully')
+    script.remove()
   }
+  script.onerror = () => {
+    console.error('🎯 Failed to load fetch hijack script')
+  }
+
+  // Inject at the start of <head> to ensure it runs before page scripts
+  ;(document.head || document.documentElement).prepend(script)
+
+  // Listen for postMessage events from the page context
+  window.addEventListener('message', (event: MessageEvent) => {
+    // Verify the message is from our injected script
+    if (
+      event.source !== window ||
+      !event.data ||
+      event.data.source !== 'perche-pixel-extension'
+    ) {
+      return
+    }
+
+    // Handle fetch intercepted events
+    if (event.data.type === 'FETCH_INTERCEPTED') {
+      console.log(
+        '🎯 [Content Script] Fetch intercepted via postMessage:',
+        event.data.payload,
+      )
+
+      // Dispatch to event bus for other parts of the extension
+      eventBus.dispatch('fetch:intercepted', event.data.payload)
+    }
+  })
 }

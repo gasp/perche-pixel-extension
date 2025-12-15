@@ -1,5 +1,8 @@
 import { eventBus } from '@src/lib/event-bus'
 
+let editorTile: { x: number; y: number } = { x: 0, y: 0 }
+let editorPixel: { x: number; y: number } = { x: 0, y: 0 }
+
 /**
  * Set up event listeners for application events
  */
@@ -47,6 +50,29 @@ export const setupEventListeners = () => {
       key: newKey,
       value: newValue,
     })
+  })
+
+  // Listen for fetch intercepted events
+  eventBus.on('fetch:intercepted', event => {
+    console.log('[Main] Fetch intercepted:', event.detail)
+    const match = event.detail.url.match(
+      /https:\/\/backend\.\wplace\.live\/s0\/pixel\/(\d+)\/(\d+)\?x=(\d+)&y=(\d+)/,
+    )
+
+    if (match && match.length === 5) {
+      editorTile = {
+        x: parseInt(match[1]),
+        y: parseInt(match[2]),
+      }
+      editorPixel = {
+        x: parseInt(match[3]),
+        y: parseInt(match[4]),
+      }
+      console.log('[Main] Editor tile and pixel set:', {
+        editorTile,
+        editorPixel,
+      })
+    }
   })
 
   console.log('[Main] Event listeners registered')
