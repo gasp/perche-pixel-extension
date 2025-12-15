@@ -1,0 +1,249 @@
+# Pixel Draw Project - Claude Rules
+
+## Project Overview
+
+A pixel art drawing application built with React, TypeScript, and Vite. The app allows users to draw on a pixel canvas using a color palette and various drawing tools.
+
+## Core Architecture Rules
+
+### File Naming Conventions
+
+- **All files**: Use kebab-case for all file names (e.g., `pixel-canvas.tsx`, `color-palette.tsx`, `tool-bar.tsx`)
+- **Index files**: Use lowercase `index.ts` or `index.tsx` for barrel exports
+- **Config files**: Use kebab-case (e.g., `vite.config.ts`, `eslint.config.js`)
+
+### Export/Import Conventions
+
+- **NEVER use `export default`** - Always use named exports
+- Components should be exported as named functions: `export function ComponentName() { ... }`
+- Types and interfaces should be exported at the module level: `export type TypeName = ...`
+- Constants and utilities should be exported as named exports: `export const utilityName = ...`
+
+### Canvas & Drawing Architecture
+
+- **All drawing operations happen in the canvas**: The `<canvas>` element is the single source of truth for rendering pixels
+- **Drawing logic is canvas-based**: Use Canvas API (`CanvasRenderingContext2D`) for all pixel rendering
+- **Canvas is declarative**: React manages the canvas lifecycle via refs and useEffect
+- **No DOM manipulation for pixels**: Individual pixels are NOT rendered as DOM elements
+
+### Tool Management
+
+- **Tools are DOM-based and React-managed**: All drawing tools (brush, eraser, fill bucket, color picker, etc.) are React components in the DOM
+- **Tool state in React state**: Tool selection, configuration, and behavior are managed by React state/hooks
+- **Tool UI lives outside canvas**: Tool buttons, palettes, and controls are standard React components with event handlers
+- **Tools control canvas behavior**: Selected tools determine how mouse/touch events on the canvas are interpreted
+
+## Technology Stack
+
+- **Framework**: React 19.2.0 with TypeScript
+- **Build Tool**: Vite 7.2.4
+- **Styling**: Tailwind CSS 4.1.17 (with @tailwindcss/vite plugin)
+- **Type Checking**: TypeScript 5.9.3
+- **Linting**: ESLint 9.39.1 with React-specific plugins
+- **Formatting**: Prettier 3.7.4 with Tailwind plugin
+
+## Code Style Guidelines
+
+### TypeScript
+
+- Use strict TypeScript configurations
+- Define explicit types for all props interfaces
+- Use `type` over `interface`
+
+### React Patterns
+
+- Use functional components with hooks exclusively
+- Prefer `useState` for local component state
+- Use `useRef` for direct DOM/canvas access
+- Use `useEffect` for side effects (e.g., canvas drawing)
+- Use `useCallback` and `useMemo` only when necessary for performance optimization
+- Props interfaces should be named `{ComponentName}Props`
+- use type OwnProps to define the main component's properties, not for hooks
+
+### State Management
+
+- Keep pixel data in a matrix structure: `PixelColor[][]` where `PixelColor = string | null`
+- `null` represents an empty/transparent pixel
+- Color values are hex strings (e.g., `"#ff0000"`) or RGB format
+- Lift state up to parent components when needed for tool/canvas coordination
+- Consider React Context for global state (e.g., selected color, active tool)
+
+### Canvas Patterns
+
+- Always use `useRef<HTMLCanvasElement>(null)` for canvas references
+- Redraw the entire canvas on state changes (declarative approach)
+- Handle canvas events (click, drag, touch) at the canvas element level
+- Convert mouse/touch coordinates to pixel coordinates based on `pixelSize`
+- Validate pixel coordinates are within bounds before updating
+
+### Styling
+
+- Use Tailwind CSS utility classes for styling
+- Use inline styles only when necessary (e.g., dynamic canvas dimensions)
+- Keep color palette definitions in separate data files
+- Use CSS custom properties for theme colors if needed
+
+## Project Structure
+
+```
+src/
+├── app.tsx              # Main App component (kebab-case!)
+├── main.tsx             # Entry point
+├── canvas/
+│   ├── index.ts         # Barrel exports
+│   └── pixel-canvas.tsx # Canvas component (kebab-case!)
+├── tools/               # Tool components (to be created)
+│   ├── index.ts
+│   ├── tool-bar.tsx     # Tool selection UI
+│   ├── brush-tool.tsx   # Brush tool logic
+│   └── ...
+├── color-palette.ts     # Color palette data
+└── style.css            # Global styles
+```
+
+## Development Guidelines
+
+### When Adding New Tools
+
+1. Create tool component in `src/tools/`
+2. Tool state and logic live in React (not in canvas)
+3. Tools emit events/callbacks that modify the pixel matrix
+4. Canvas responds declaratively by re-rendering
+5. Tool UI should provide clear visual feedback for selection
+
+### When Modifying Canvas
+
+1. Keep drawing logic pure and side-effect free where possible
+2. All rendering should be triggered by React state changes
+3. Optimize by batching multiple pixel updates together
+4. Consider performance for large canvas sizes (e.g., 128x128+)
+
+### When Working with Colors
+
+1. Use the predefined color palette from `color-palette.ts`
+2. Support both premium and free colors
+3. Convert RGB arrays to hex strings for canvas operations: `rgb(${r}, ${g}, ${b})`
+4. Keep color selection in React state
+
+### Code Quality
+
+- Run `npm run lint` before committing
+- Use Prettier for automatic formatting
+- Write descriptive variable and function names
+- Add comments for complex canvas operations
+- Avoid magic numbers - use named constants
+
+## Testing Considerations
+
+- Test canvas coordinate transformations thoroughly
+- Verify pixel updates at boundaries (0, max-1)
+- Test tool switching and state preservation
+- Ensure performance with large canvases
+- Test mouse and touch events separately
+
+## Performance Notes
+
+- Canvas redraws can be expensive - optimize useEffect dependencies
+- Consider debouncing/throttling for drag events
+- Use `imageRendering: "pixelated"` CSS for crisp pixel display
+- Batch multiple pixel updates before triggering re-render
+- Consider Web Workers for complex operations (e.g., fill tool flood-fill)
+
+## Accessibility
+
+- Provide keyboard alternatives for mouse-based tools
+- Add ARIA labels to tool buttons
+- Ensure color contrast for UI elements
+- Consider screen reader announcements for tool selection
+
+## Common Patterns
+
+### Adding a New Tool
+
+```typescript
+// In src/tools/new-tool.tsx
+export interface NewToolProps {
+  onToolActivate: (config: ToolConfig) => void;
+  isActive: boolean;
+}
+
+export function NewTool({ onToolActivate, isActive }: NewToolProps) {
+  // Tool UI and logic here
+  return (
+    <button
+      onClick={() => onToolActivate({ type: 'new-tool' })}
+      className={isActive ? 'active' : ''}
+    >
+      Tool Name
+    </button>
+  );
+}
+```
+
+### Updating Pixels from Tools
+
+```typescript
+// Tools don't draw directly - they call callbacks
+const handleToolUse = (x: number, y: number) => {
+  onPixelUpdate(x, y, selectedColor)
+}
+```
+
+### Canvas Drawing Pattern
+
+```typescript
+useEffect(() => {
+  const canvas = canvasRef.current
+  if (!canvas) return
+
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return
+
+  // Clear and redraw
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+  // Draw pixels from matrix
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const color = pixelMatrix[y][x]
+      if (color) {
+        ctx.fillStyle = color
+        ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize)
+      }
+    }
+  }
+}, [pixelMatrix, width, height, pixelSize])
+```
+
+## File Naming Examples
+
+✅ **CORRECT**:
+
+- `src/tools/brush-tool.tsx`
+- `src/tools/fill-tool.tsx`
+- `src/canvas/pixel-canvas.tsx`
+- `src/components/color-picker.tsx`
+
+❌ **INCORRECT**:
+
+- `src/tools/BrushTool.tsx` (PascalCase)
+- `src/tools/brushTool.tsx` (camelCase)
+- `src/canvas/PixelCanvas.tsx` (PascalCase)
+
+## Export Examples
+
+✅ **CORRECT**:
+
+```typescript
+export function PixelCanvas() { ... }
+export type PixelColor = string | null;
+export const colorPalette = [...];
+```
+
+❌ **INCORRECT**:
+
+```typescript
+export default function PixelCanvas() { ... }
+export default PixelColor;
+export default colorPalette;
+```
