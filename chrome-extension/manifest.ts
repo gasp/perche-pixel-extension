@@ -50,15 +50,11 @@ const manifest = {
   content_scripts: [
     {
       matches: ['https://wplace.live/*'],
-      js: ['content/wplace.iife.js'],
+      js: ['content/wplace.iife.js', 'content-ui/editor.iife.js'],
     },
     {
       matches: ['http://*/*', 'https://*/*', '<all_urls>'],
       js: ['content-ui/all.iife.js'],
-    },
-    {
-      matches: ['https://example.com/*'],
-      js: ['content-ui/example.iife.js'],
     },
     {
       matches: ['http://*/*', 'https://*/*', '<all_urls>'],

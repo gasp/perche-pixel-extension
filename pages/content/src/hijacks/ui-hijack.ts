@@ -1,4 +1,4 @@
-import { eventBus } from '@src/lib/event-bus'
+import { eventBus } from '@extension/shared'
 
 /**
  * Check if the element is the modal container

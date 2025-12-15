@@ -1,4 +1,4 @@
-import { eventBus } from '@src/lib/event-bus'
+import { eventBus } from '@extension/shared'
 
 /**
  * Hijacks Map.prototype.set to intercept pixel data

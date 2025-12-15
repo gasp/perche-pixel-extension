@@ -61,8 +61,8 @@ class EventBus {
   private target: EventTarget
 
   constructor() {
-    // Use document as the event target
-    this.target = document
+    // Use document as the event target (only in browser environment)
+    this.target = typeof document !== 'undefined' ? document : new EventTarget()
   }
 
   /**

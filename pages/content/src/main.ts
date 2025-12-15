@@ -1,18 +1,13 @@
-import { eventBus } from '@src/lib/event-bus'
+import { eventBus } from '@extension/shared'
 
 let editorTile: { x: number; y: number } = { x: 0, y: 0 }
 let editorPixel: { x: number; y: number } = { x: 0, y: 0 }
 
-/**
- * Set up event listeners for application events
- */
 export const setupEventListeners = () => {
   // Listen for editor open events
   eventBus.on('editor:open', event => {
     console.log('[Main] Editor open event received:', event.detail)
-    // TODO: Implement actual editor functionality
-    // For now, show an alert
-    alert('Editor functionality coming soon!')
+    // The editor UI component will listen for this event directly
   })
 
   // Listen for editor close events

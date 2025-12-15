@@ -8,7 +8,7 @@
   console.log('🎯 [Page Context] Hijacking window.fetch')
 
   window.fetch = async function (...args) {
-    console.log('🎯 [Page Context] fetch intercepted:', args)
+    // console.log('🎯 [Page Context] fetch intercepted:', args)
 
     // Call original fetch
     const response = await originalFetch.apply(this, args)
