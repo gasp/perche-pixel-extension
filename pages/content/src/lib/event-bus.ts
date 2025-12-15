@@ -19,6 +19,18 @@ export type ContentEventMap = {
     coordinates?: { x: number; y: number }
     timestamp: number
   }
+  'pixeldata:marker': {
+    tX: number
+    tY: number
+    pX: number
+    pY: number
+    s: number
+    value: unknown
+  }
+  'pixeldata:add': {
+    key: string
+    value: unknown
+  }
 }
 
 export type ContentEventType = keyof ContentEventMap

@@ -22,5 +22,32 @@ export const setupEventListeners = () => {
     console.log('[Main] Paint click event received:', event.detail)
   })
 
+  // Listen for pixel data marker events from map hijack
+  eventBus.on('pixeldata:marker', event => {
+    console.log('[Main] Pixel data marker received:', event.detail)
+
+    const { tX, tY, pX, pY, s, value } = event.detail
+
+    // Calculate position 1 pixel to the right
+    const newPX = pX + 1
+
+    // Create the new key for the pixel 1px to the right
+    const newKey = `t=(${tX},${tY});p=(${newPX},${pY});s=${s}`
+
+    // Create the new value (same as original)
+    const newValue = {
+      ...(value as object),
+      pixel: [newPX, pY],
+    }
+
+    console.log('[Main] Sending pixel 1px to the right:', { newKey, newValue })
+
+    // Send back to page context to add to the map
+    eventBus.dispatch('pixeldata:add', {
+      key: newKey,
+      value: newValue,
+    })
+  })
+
   console.log('[Main] Event listeners registered')
 }
