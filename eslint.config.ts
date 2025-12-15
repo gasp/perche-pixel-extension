@@ -1,15 +1,15 @@
-import { fixupConfigRules } from '@eslint/compat';
-import { FlatCompat } from '@eslint/eslintrc';
-import js from '@eslint/js';
-import { flatConfigs as importXFlatConfig } from 'eslint-plugin-import-x';
-import jsxA11y from 'eslint-plugin-jsx-a11y';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
-import reactPlugin from 'eslint-plugin-react';
-import { browser, es2020, node } from 'globals';
-import { config, configs as tsConfigs, parser as tsParser } from 'typescript-eslint';
-import type { FixupConfigArray } from '@eslint/compat';
+import { fixupConfigRules } from '@eslint/compat'
+import { FlatCompat } from '@eslint/eslintrc'
+import js from '@eslint/js'
+import { flatConfigs as importXFlatConfig } from 'eslint-plugin-import-x'
+import jsxA11y from 'eslint-plugin-jsx-a11y'
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
+import reactPlugin from 'eslint-plugin-react'
+import { browser, es2020, node } from 'globals'
+import { configs as tsConfigs, parser as tsParser } from 'typescript-eslint'
+import type { FixupConfigArray } from '@eslint/compat'
 
-export default config(
+export default [
   // Shared configs
   js.configs.recommended,
   ...tsConfigs.recommended,
@@ -17,7 +17,11 @@ export default config(
   importXFlatConfig.recommended,
   importXFlatConfig.typescript,
   eslintPluginPrettierRecommended,
-  ...fixupConfigRules(new FlatCompat().extends('plugin:react-hooks/recommended') as FixupConfigArray),
+  ...fixupConfigRules(
+    new FlatCompat().extends(
+      'plugin:react-hooks/recommended',
+    ) as FixupConfigArray,
+  ),
   {
     files: ['**/*.{ts,tsx}'],
     ...reactPlugin.configs.flat.recommended,
@@ -25,7 +29,12 @@ export default config(
   },
   // Custom config
   {
-    ignores: ['**/build/**', '**/dist/**', '**/node_modules/**', 'chrome-extension/manifest.js'],
+    ignores: [
+      '**/build/**',
+      '**/dist/**',
+      '**/node_modules/**',
+      'chrome-extension/manifest.js',
+    ],
   },
   {
     files: ['**/*.{ts,tsx}'],
@@ -59,7 +68,8 @@ export default config(
         'error',
         {
           name: 'type-fest',
-          message: 'Please import from `@extension/shared` instead of `type-fest`.',
+          message:
+            'Please import from `@extension/shared` instead of `type-fest`.',
         },
       ],
       'arrow-body-style': ['error', 'as-needed'],
@@ -70,7 +80,16 @@ export default config(
         {
           'newlines-between': 'never',
           alphabetize: { order: 'asc', caseInsensitive: true },
-          groups: ['index', 'sibling', 'parent', 'internal', 'external', 'builtin', 'object', 'type'],
+          groups: [
+            'index',
+            'sibling',
+            'parent',
+            'internal',
+            'external',
+            'builtin',
+            'object',
+            'type',
+          ],
           pathGroups: [
             {
               pattern: '@*/**',
@@ -86,9 +105,12 @@ export default config(
       'import-x/no-named-as-default-member': 'error',
       'import-x/newline-after-import': 'error',
       'import-x/no-deprecated': 'error',
-      'import-x/no-duplicates': ['error', { considerQueryString: true, 'prefer-inline': false }],
+      'import-x/no-duplicates': [
+        'error',
+        { considerQueryString: true, 'prefer-inline': false },
+      ],
       'import-x/consistent-type-specifier-style': 'error',
-      'import-x/exports-last': 'error',
+      'import-x/exports-last': 'off',
       'import-x/first': 'error',
     },
     linterOptions: {
@@ -102,4 +124,4 @@ export default config(
       'no-restricted-imports': 'off',
     },
   },
-);
+]

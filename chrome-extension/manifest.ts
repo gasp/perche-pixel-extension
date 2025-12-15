@@ -1,7 +1,7 @@
-import { readFileSync } from 'node:fs';
-import type { ManifestType } from '@extension/shared';
+import { readFileSync } from 'node:fs'
+import type { ManifestType } from '@extension/shared'
 
-const packageJson = JSON.parse(readFileSync('./package.json', 'utf8'));
+const packageJson = JSON.parse(readFileSync('./package.json', 'utf8'))
 
 /**
  * @prop default_locale
@@ -49,12 +49,8 @@ const manifest = {
   },
   content_scripts: [
     {
-      matches: ['http://*/*', 'https://*/*', '<all_urls>'],
-      js: ['content/all.iife.js'],
-    },
-    {
-      matches: ['https://example.com/*'],
-      js: ['content/example.iife.js'],
+      matches: ['https://wplace.live/*'],
+      js: ['content/wplace.iife.js'],
     },
     {
       matches: ['http://*/*', 'https://*/*', '<all_urls>'],
@@ -79,6 +75,6 @@ const manifest = {
   side_panel: {
     default_path: 'side-panel/index.html',
   },
-} satisfies ManifestType;
+} satisfies ManifestType
 
-export default manifest;
+export default manifest
