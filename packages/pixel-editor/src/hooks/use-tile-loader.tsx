@@ -17,8 +17,8 @@ export function useTileLoader() {
       // https://api.thebugging.com/cors-proxy?url=
       const originalUrl =
         'https://backend.wplace.live/files/s0/tiles/1027/709.png'
-      const proxyUrl = `http://localhost:3001/proxy?url=${encodeURIComponent(originalUrl)}`
-      const tileData = await loadTileFromUrl(proxyUrl)
+      // const proxyUrl = `http://localhost:3001/proxy?url=${encodeURIComponent(originalUrl)}`
+      const tileData = await loadTileFromUrl(originalUrl)
 
       // Load the tile pixels into the store (at origin 0,0)
       loadPixels(tileData.pixels)

@@ -4,10 +4,20 @@ let editorTile: { x: number; y: number } = { x: 0, y: 0 }
 let editorPixel: { x: number; y: number } = { x: 0, y: 0 }
 
 export const setupEventListeners = () => {
-  // Listen for editor open events
+  // Listen for editor open events and forward with coordinates
   eventBus.on('editor:open', event => {
     console.log('[Main] Editor open event received:', event.detail)
-    // The editor UI component will listen for this event directly
+    console.log('[Main] Forwarding with coordinates:', {
+      tile: editorTile,
+      pixel: editorPixel,
+    })
+
+    // Re-dispatch with tile and pixel coordinates
+    eventBus.dispatch('editor:open:with-coords', {
+      ...event.detail,
+      tile: editorTile,
+      pixel: editorPixel,
+    })
   })
 
   // Listen for editor close events

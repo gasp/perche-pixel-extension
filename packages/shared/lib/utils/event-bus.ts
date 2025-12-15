@@ -11,6 +11,12 @@ export type ContentEventMap = {
     source: 'ui-hijack'
     timestamp: number
   }
+  'editor:open:with-coords': {
+    source: string
+    timestamp: number
+    tile: { x: number; y: number }
+    pixel: { x: number; y: number }
+  }
   'editor:close': {
     source: string
     timestamp: number

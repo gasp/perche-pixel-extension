@@ -8,6 +8,10 @@ export default function App() {
   const [tileCoords, setTileCoords] = useState<{ x: number; y: number } | null>(
     null,
   )
+  const [pixelCoords, setPixelCoords] = useState<{
+    x: number
+    y: number
+  } | null>(null)
 
   // Dynamically inject/remove CSS when editor visibility changes
   useEffect(() => {
@@ -32,14 +36,32 @@ export default function App() {
   useEffect(() => {
     console.log('🎨 Content ui editor loaded')
 
-    // Listen for editor open events
-    const unsubscribeOpen = eventBus.on('editor:open', event => {
+    // Listen for editor open events with coordinates
+    const unsubscribeOpen = eventBus.on('editor:open:with-coords', event => {
       console.log('🎨 Editor open event received:', event.detail)
       setIsVisible(true)
 
-      // Extract tile coordinates from event if available
-      // For now, default to tile (0, 0)
-      setTileCoords({ x: 0, y: 0 })
+      // Extract tile coordinates from event
+      const { tile, pixel } = event.detail as {
+        tile?: { x: number; y: number }
+        pixel?: { x: number; y: number }
+      }
+
+      if (pixel) {
+        console.log('🎨 Setting pixel coordinates:', pixel)
+        setPixelCoords(pixel)
+      } else {
+        console.warn('🎨 No pixel coordinates provided, defaulting to (0, 0)')
+        setPixelCoords({ x: 0, y: 0 })
+      }
+
+      if (tile) {
+        console.log('🎨 Setting tile coordinates:', tile)
+        setTileCoords(tile)
+      } else {
+        console.warn('🎨 No tile coordinates provided, defaulting to (0, 0)')
+        setTileCoords({ x: 0, y: 0 })
+      }
     })
 
     // Listen for editor close events
@@ -126,6 +148,7 @@ export default function App() {
             <h1 className="text-xl font-bold">
               Pixel Editor
               {tileCoords && ` - Tile (${tileCoords.x}, ${tileCoords.y})`}
+              {pixelCoords && ` - Pixel (${pixelCoords.x}, ${pixelCoords.y})`}
             </h1>
             <button
               onClick={handleClose}
