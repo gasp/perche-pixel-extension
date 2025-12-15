@@ -14,11 +14,10 @@ import { TexturePalette } from './textures'
 import { BrushSizePalette } from './brush-sizes'
 import { StampPalette } from './stamps'
 import { AppLayout, ViewportInfo } from './components'
-import type { LoadTilePayload } from './utils/post-message'
-
 import { DebugInfo } from './components/debug-info'
 import { LoadingInfo } from './components/loading-info'
 import { TilePalette } from './tiles'
+import type { LoadTilePayload } from './utils/post-message'
 
 export function App() {
   const setDimensions = useViewportStore(state => state.setDimensions)
@@ -40,23 +39,18 @@ export function App() {
     }
   }, [width, height, setDimensions])
 
-  // Load tile on mount
-  useEffect(() => {
-    loadTile()
-  }, [loadTile])
-
   // Listen for tile load requests from parent
   useEffect(() => {
     const unsubscribeLoadTile = onMessage('editor:load:tile', payload => {
-      const { tileX, tileY } = payload as LoadTilePayload
-      console.log('📥 Load tile request:', { tileX, tileY })
-      // TODO: Implement tile loading with specific coordinates
+      const { tileUrl } = payload as LoadTilePayload
+      console.log('📥 Load tile request:', tileUrl)
+      loadTile(tileUrl)
     })
 
     return () => {
       unsubscribeLoadTile()
     }
-  }, [onMessage])
+  }, [onMessage, loadTile])
 
   const selectedTool = useToolStore(state => state.selectedTool)
 

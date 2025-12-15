@@ -41,27 +41,14 @@ export default function App() {
       console.log('🎨 Editor open event received:', event.detail)
       setIsVisible(true)
 
-      // Extract tile coordinates from event
-      const { tile, pixel } = event.detail as {
-        tile?: { x: number; y: number }
-        pixel?: { x: number; y: number }
-      }
+      // Extract coordinates from event (typed by ContentEventMap)
+      const { tile, pixel } = event.detail
 
-      if (pixel) {
-        console.log('🎨 Setting pixel coordinates:', pixel)
-        setPixelCoords(pixel)
-      } else {
-        console.warn('🎨 No pixel coordinates provided, defaulting to (0, 0)')
-        setPixelCoords({ x: 0, y: 0 })
-      }
+      console.log('🎨 Setting tile coordinates:', tile)
+      console.log('🎨 Setting pixel coordinates:', pixel)
 
-      if (tile) {
-        console.log('🎨 Setting tile coordinates:', tile)
-        setTileCoords(tile)
-      } else {
-        console.warn('🎨 No tile coordinates provided, defaulting to (0, 0)')
-        setTileCoords({ x: 0, y: 0 })
-      }
+      setTileCoords(tile)
+      setPixelCoords(pixel)
     })
 
     // Listen for editor close events
@@ -78,15 +65,18 @@ export default function App() {
     }
   }, [])
 
-  // Send tile coordinates to editor when visible
+  // Send tile URL to editor when visible
   useEffect(() => {
     if (isVisible && tileCoords) {
       // Small delay to ensure editor is mounted
       setTimeout(() => {
+        // Construct the tile URL
+        const tileUrl = `https://backend.wplace.live/files/s0/tiles/${tileCoords.x}/${tileCoords.y}.png`
+
         const payload: LoadTilePayload = {
-          tileX: tileCoords.x,
-          tileY: tileCoords.y,
+          tileUrl,
         }
+        console.log('🎨 Sending tile load request:', payload)
         postMessageBridge.sendToEditor('editor:load:tile', payload)
       }, 100)
     }

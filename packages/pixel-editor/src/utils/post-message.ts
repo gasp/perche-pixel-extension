@@ -33,8 +33,7 @@ export interface PixelUpdatePayload {
 }
 
 export interface LoadTilePayload {
-  tileX: number
-  tileY: number
+  tileUrl: string
 }
 
 export interface SetColorPayload {
