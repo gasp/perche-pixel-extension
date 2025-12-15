@@ -4,6 +4,7 @@ import {
   useViewMatrix,
   useTileLoader,
   useActions,
+  usePostMessage,
 } from '@/hooks'
 import { useToolStore, useViewportStore } from '@/stores'
 import { PixelCanvas } from './canvas'
@@ -13,6 +14,7 @@ import { TexturePalette } from './textures'
 import { BrushSizePalette } from './brush-sizes'
 import { StampPalette } from './stamps'
 import { AppLayout, ViewportInfo } from './components'
+import type { LoadTilePayload } from './utils/post-message'
 
 import { DebugInfo } from './components/debug-info'
 import { LoadingInfo } from './components/loading-info'
@@ -29,6 +31,8 @@ export function App() {
   const height = Math.floor(canvasDimensions.height / pixelSize)
 
   const { isLoadingTile, loadTile } = useTileLoader()
+  const { onMessage } = usePostMessage()
+
   // Update viewport dimensions in store when they change
   useEffect(() => {
     if (width > 0 && height > 0) {
@@ -40,6 +44,19 @@ export function App() {
   useEffect(() => {
     loadTile()
   }, [loadTile])
+
+  // Listen for tile load requests from parent
+  useEffect(() => {
+    const unsubscribeLoadTile = onMessage('editor:load:tile', payload => {
+      const { tileX, tileY } = payload as LoadTilePayload
+      console.log('📥 Load tile request:', { tileX, tileY })
+      // TODO: Implement tile loading with specific coordinates
+    })
+
+    return () => {
+      unsubscribeLoadTile()
+    }
+  }, [onMessage])
 
   const selectedTool = useToolStore(state => state.selectedTool)
 

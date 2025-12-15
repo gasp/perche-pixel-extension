@@ -1,4 +1,4 @@
-import { useEffect, useRef, type MouseEvent, type WheelEvent } from 'react'
+import { useEffect, useRef, type MouseEvent } from 'react'
 import { useViewportStore, useHoverStore, useTileStore } from '@/stores'
 import type { PixelCoord, PixelMatrix } from '@/types'
 import { drawGrid } from './grid'

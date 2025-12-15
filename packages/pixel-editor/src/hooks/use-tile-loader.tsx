@@ -9,6 +9,7 @@ export function useTileLoader() {
   const loadTile = useCallback(async () => {
     setIsLoadingTile(true)
     try {
+      // TODO: this mihght not be needed anymore when running in the extension context
       // Use CORS proxy to load the tile
       // I am using a small script to proxy the request to avoid CORS issues
       // it is not a secure way to do this, but it is a quick and dirty solution

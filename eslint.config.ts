@@ -76,17 +76,16 @@ export default [
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/consistent-type-exports': 'error',
       'import-x/order': [
-        'error',
+        'warn',
         {
           'newlines-between': 'never',
-          alphabetize: { order: 'asc', caseInsensitive: true },
           groups: [
+            'builtin',
+            'external',
+            'internal',
             'index',
             'sibling',
             'parent',
-            'internal',
-            'external',
-            'builtin',
             'object',
             'type',
           ],
