@@ -65,9 +65,9 @@ export default function App() {
     }
   }, [])
 
-  // Send tile URL to editor when visible
+  // Send tile URL and pixel coordinates to editor when visible
   useEffect(() => {
-    if (isVisible && tileCoords) {
+    if (isVisible && tileCoords && pixelCoords) {
       // Small delay to ensure editor is mounted
       setTimeout(() => {
         // Construct the tile URL
@@ -75,12 +75,14 @@ export default function App() {
 
         const payload: LoadTilePayload = {
           tileUrl,
+          pixelX: pixelCoords.x,
+          pixelY: pixelCoords.y,
         }
         console.log('🎨 Sending tile load request:', payload)
         postMessageBridge.sendToEditor('editor:load:tile', payload)
       }, 100)
     }
-  }, [isVisible, tileCoords])
+  }, [isVisible, tileCoords, pixelCoords])
 
   // Listen for messages from the pixel-editor
   useEffect(() => {

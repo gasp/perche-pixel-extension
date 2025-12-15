@@ -21,6 +21,7 @@ import type { LoadTilePayload } from './utils/post-message'
 
 export function App() {
   const setDimensions = useViewportStore(state => state.setDimensions)
+  const panToPixel = useViewportStore(state => state.panToPixel)
   const pixelSize = useViewportStore(state => state.pixelSize)
 
   // Get canvas dimensions based on available screen space
@@ -42,15 +43,23 @@ export function App() {
   // Listen for tile load requests from parent
   useEffect(() => {
     const unsubscribeLoadTile = onMessage('editor:load:tile', payload => {
-      const { tileUrl } = payload as LoadTilePayload
-      console.log('📥 Load tile request:', tileUrl)
+      const { tileUrl, pixelX, pixelY } = payload as LoadTilePayload
+      console.log('📥 Load tile request:', { tileUrl, pixelX, pixelY })
+
+      // Load the tile
       loadTile(tileUrl)
+
+      // Pan to pixel if coordinates provided
+      if (pixelX !== undefined && pixelY !== undefined) {
+        console.log('📍 Panning to pixel:', { pixelX, pixelY })
+        panToPixel(pixelX, pixelY)
+      }
     })
 
     return () => {
       unsubscribeLoadTile()
     }
-  }, [onMessage, loadTile])
+  }, [onMessage, loadTile, panToPixel])
 
   const selectedTool = useToolStore(state => state.selectedTool)
 

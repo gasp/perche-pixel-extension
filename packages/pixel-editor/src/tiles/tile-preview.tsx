@@ -1,6 +1,7 @@
-import { useEffect, useRef, type MouseEvent } from 'react'
+import { useEffect, useRef } from 'react'
 import { useViewportStore } from '@/stores'
 import type { PixelColor } from '@/types'
+import type { MouseEvent } from 'react'
 
 type TilePixelGrid = Map<string, PixelColor>
 
@@ -20,7 +21,6 @@ export function TilePreview({ tilePixelGrid, maxDisplaySize = 200 }: OwnProps) {
   const lastOffsetRef = useRef({ x: 0, y: 0 })
   const lastDimensionsRef = useRef({ width: 0, height: 0 })
   const needsRedrawRef = useRef(true)
-  const setOffset = useViewportStore(state => state.setViewportOffset)
 
   const handleCanvasClick = (e: MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current
@@ -38,15 +38,8 @@ export function TilePreview({ tilePixelGrid, maxDisplaySize = 200 }: OwnProps) {
     const tileX = (clickX / maxDisplaySize) * maxCanvasSize * sampleRate
     const tileY = (clickY / maxDisplaySize) * maxCanvasSize * sampleRate
 
-    // Get current dimensions to center the viewport on the clicked point
-    const dimensions = useViewportStore.getState().dimensions
-
-    // Set offset so the clicked point is centered in the viewport
-    // offset is negative, so we negate the calculation
-    const newOffsetX = -(tileX - dimensions.width / 2)
-    const newOffsetY = -(tileY - dimensions.height / 2)
-
-    setOffset({ x: Math.floor(newOffsetX), y: Math.floor(newOffsetY) })
+    // Use the store's panToPixel method to center on the clicked point
+    useViewportStore.getState().panToPixel(tileX, tileY)
   }
 
   useEffect(() => {
@@ -145,8 +138,7 @@ export function TilePreview({ tilePixelGrid, maxDisplaySize = 200 }: OwnProps) {
         style={{
           width: `${maxDisplaySize}px`,
           height: `${maxDisplaySize}px`,
-        }}
-      >
+        }}>
         No tile loaded
       </div>
     )

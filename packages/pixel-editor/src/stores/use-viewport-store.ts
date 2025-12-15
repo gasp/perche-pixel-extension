@@ -26,6 +26,7 @@ type ViewportStore = {
   setViewportOffset: (offset: ViewportOffset) => void
   setDimensions: (dimensions: ViewportDimensions) => void
   moveViewport: (deltaX: number, deltaY: number) => void
+  panToPixel: (pixelX: number, pixelY: number) => void
   increasePixelSize: () => void
   decreasePixelSize: () => void
 }
@@ -76,6 +77,26 @@ export const useViewportStore = create<ViewportStore>(set => ({
         y: state.offset.y + deltaY,
       },
     })),
+
+  panToPixel: (pixelX: number, pixelY: number) =>
+    set(state => {
+      // Set offset so the pixel is centered in the viewport
+      // Following the same logic as tile-preview click handler
+      // offset is negative, so we negate the calculation
+      const newOffsetX = -(pixelX - state.dimensions.width / 2)
+      const newOffsetY = -(pixelY - state.dimensions.height / 2)
+
+      console.log(
+        `📍 Panning to pixel (${pixelX}, ${pixelY}), offset: (${newOffsetX}, ${newOffsetY})`,
+      )
+
+      return {
+        offset: {
+          x: Math.floor(newOffsetX),
+          y: Math.floor(newOffsetY),
+        },
+      }
+    }),
 
   increasePixelSize: () =>
     set(state => zoom(state.pixelSize + PIXEL_SIZE_STEP, state)),
