@@ -1,6 +1,7 @@
 import { hijackFetch } from '@src/hijacks/fetch-hijack'
 import { hijackMapPrototypeSetMethod } from '@src/hijacks/map-hijack'
 import { uiHijack } from '@src/hijacks/ui-hijack'
+import { initDebugUI } from '@src/debug-ui'
 import { setupEventListeners } from '@src/main'
 
 console.log('🎯 wplace loaded')
@@ -13,6 +14,8 @@ const init = () => {
   hijackFetch()
   hijackMapPrototypeSetMethod()
   uiHijack()
+
+  initDebugUI()
 }
 
 // if (document.readyState === 'loading') {
