@@ -3,6 +3,9 @@ import { hayCart } from './library/hay-cart'
 import { pineTree1 } from './library/pine-tree-1'
 import { bushYellow0 } from './library/bush-yellow-0'
 import { bushesYellowShadow0 } from './library/bushes-yellow-shadow-0'
+import { bushesYellowShadow1 } from './library/bushes-yellow-shadow-1'
+import { bushesYellowShadow2 } from './library/bushes-yellow-shadow-2'
+import { bushesYellowShadow3 } from './library/bushes-yellow-shadow-3'
 import { appleTreeShadow0 } from './library/apple-tree-shadow-0'
 import type { Color, PixelCoord } from '@/types'
 
@@ -81,6 +84,21 @@ export const stamps: Stamp[] = [
   },
   {
     id: 7,
+    name: 'Bushes Yellow Shadow',
+    pixels: bushesYellowShadow1,
+  },
+  {
+    id: 8,
+    name: 'Bushes Yellow Shadow',
+    pixels: bushesYellowShadow2,
+  },
+  {
+    id: 8,
+    name: 'Bushes Yellow Shadow',
+    pixels: bushesYellowShadow3,
+  },
+  {
+    id: 9,
     name: 'Apple Tree Shadow',
     pixels: appleTreeShadow0,
   },
