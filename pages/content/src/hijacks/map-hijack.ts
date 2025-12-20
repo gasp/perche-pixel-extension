@@ -49,6 +49,23 @@ export const hijackMapPrototypeSetMethod = () => {
     }
   })
 
+  // Listen for clear marker requests from main.ts and forward to page context
+  eventBus.on('pixeldata:clear-marker', event => {
+    console.log(
+      '🎯 [Content Script] Forwarding CLEAR_MARKER to page context:',
+      event.detail,
+    )
+
+    window.postMessage(
+      {
+        type: 'CLEAR_MARKER',
+        source: 'perche-pixel-extension-response',
+        payload: event.detail,
+      },
+      '*',
+    )
+  })
+
   // Listen for add pixel requests from main.ts and forward to page context
   eventBus.on('pixeldata:add', event => {
     console.log(

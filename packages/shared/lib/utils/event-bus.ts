@@ -36,6 +36,7 @@ export type ContentEventMap = {
     s: number
     value: unknown
   }
+  'pixeldata:clear-marker': Record<string, never>
   'pixeldata:add': {
     key: string
     value: unknown

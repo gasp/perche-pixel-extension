@@ -90,14 +90,6 @@ export const setupEventListeners = () => {
       if (pixels && pixels.length > 0) {
         console.log('[Main] Processing', pixels.length, 'pixels')
 
-        // 0. add pixels to the map
-        for (const pixel of pixels) {
-          eventBus.dispatch(
-            'pixeldata:add',
-            gridPixelToWplaceColor(pixel, editorTile),
-          )
-        }
-
         // 1. click on Paint
         ;(
           document.querySelector('.bottom-0 .btn-primary') as HTMLElement
@@ -108,7 +100,21 @@ export const setupEventListeners = () => {
         await new Promise(resolve => setTimeout(resolve, 1000))
         // this should catch the map reference in the window.currentMapRef
 
-        // 3. click on Paint button again actually appends the write
+        // 3. clear the marker pixel and add pixels to the map
+        console.log('[Main] Dispatching pixeldata:clear-marker event')
+        eventBus.dispatch('pixeldata:clear-marker', {})
+
+        for (const pixel of pixels) {
+          eventBus.dispatch(
+            'pixeldata:add',
+            gridPixelToWplaceColor(pixel, editorTile),
+          )
+        }
+
+        // wait for the pixels to be added to the map
+        await new Promise(resolve => setTimeout(resolve, 1000))
+
+        // 4. click on Paint button again actually appends the write
         ;(
           document.querySelector('.bottom-0 .btn-primary') as HTMLElement
         ).click()

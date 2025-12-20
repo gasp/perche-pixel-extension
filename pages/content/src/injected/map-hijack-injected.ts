@@ -36,6 +36,18 @@ declare global {
       return
     }
 
+    if (event.data.type === 'CLEAR_MARKER') {
+      console.log('🎯 [Page Context] Received CLEAR_MARKER request')
+
+      // Clear the entire map
+      if (window.currentMapRef) {
+        window.currentMapRef.clear()
+        console.log('🎯 [Page Context] Cleared map')
+      } else {
+        console.warn('🎯 [Page Context] No map reference available')
+      }
+    }
+
     if (event.data.type === 'ADD_PIXEL') {
       const { key, value } = event.data.payload
       console.log('🎯 [Page Context] Received ADD_PIXEL request:', {
