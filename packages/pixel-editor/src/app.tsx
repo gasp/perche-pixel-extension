@@ -6,7 +6,6 @@ import {
   useActions,
   usePostMessage,
 } from '@/hooks'
-import { useToolStore, useViewportStore } from '@/stores'
 import { useToolStore, useViewportStore, useUserPixelStore } from '@/stores'
 import { PixelCanvas } from './canvas'
 import { ToolPalette } from './tools'
@@ -32,7 +31,9 @@ export function App() {
   const height = Math.floor(canvasDimensions.height / pixelSize)
 
   const { isLoadingTile, loadTile } = useTileLoader()
-  const { onMessage } = usePostMessage()
+  const { onMessage, sendMessage } = usePostMessage()
+  const userPixelGrid = useUserPixelStore(state => state.userPixelGrid)
+  const clearUserPixels = useUserPixelStore(state => state.clearPixels)
 
   // Update viewport dimensions in store when they change
   useEffect(() => {
@@ -60,15 +61,32 @@ export function App() {
       console.log('🧹 Clearing user pixels')
       clearUserPixels()
     })
+
+    const unsubscribeGetGrid = onMessage('editor:get:grid', () => {
+      console.log('📤 Grid request received, sending pixel data')
+
+      // Convert Map to array of pixels
+      const pixels = Array.from(userPixelGrid.entries()).map(([key, color]) => {
+        const [x, y] = key.split(',').map(Number)
+        return { x, y, color: color || '' }
+      })
+
+      console.log('📤 Sending grid with', pixels.length, 'pixels')
+
+      // Send back to parent
+      sendMessage('editor:grid:response', { pixels })
     })
 
     return () => {
       unsubscribeLoadTile()
+      unsubscribeGetGrid()
     }
   }, [
     onMessage,
+    sendMessage,
     loadTile,
     panToPixel,
+    userPixelGrid,
     clearUserPixels,
   ])
 

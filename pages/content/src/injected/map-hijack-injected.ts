@@ -2,6 +2,17 @@
  * This script runs in the PAGE CONTEXT (not content script context)
  * It hijacks Map.prototype.set to intercept pixel data
  */
+
+// Make this file a module so we can use declare global
+export {}
+
+// Augment Window interface to include currentMapRef
+declare global {
+  interface Window {
+    currentMapRef: Map<unknown, unknown> | null
+  }
+}
+
 ;(function () {
   const TRIGGER_COLOR_IDX = 1
   // Matches t=(###,###);p=(###,###);s=# with capture groups
@@ -11,7 +22,7 @@
   const originalSet = Map.prototype.set
 
   // Store the current Map reference for adding pixels later
-  let currentMapRef: Map<unknown, unknown> | null = null
+  window.currentMapRef = null
 
   console.log('🎯 [Page Context] Hijacking Map.prototype.set')
 
@@ -33,23 +44,9 @@
       })
 
       // Add the new pixel to the stored Map reference
-      if (currentMapRef) {
-        originalSet.call(currentMapRef, key, value)
+      if (window.currentMapRef) {
+        originalSet.call(window.currentMapRef, key, value)
         console.log('🎯 [Page Context] Added pixel to map:', key)
-
-        // originalSet.call(currentMapRef, 't=(1028,709);p=(19,824);s=0', {
-        //   color: {
-        //     r: 243,
-        //     g: 141,
-        //     b: 169,
-        //     a: 255,
-        //   },
-        //   tile: [1028, 709],
-        //   pixel: [38, 821],
-        //   season: 0,
-        //   colorIdx: 28,
-        // })
-        console.log(currentMapRef)
       } else {
         console.warn('🎯 [Page Context] No map reference available')
       }
@@ -71,7 +68,7 @@
 
     if (isTrigger && match) {
       // Store reference to this Map instance for later use
-      currentMapRef = this as Map<unknown, unknown>
+      window.currentMapRef = this as Map<unknown, unknown>
 
       // Extract numbers: match[0] is full string, match[1-5] are captures
       const tX = parseInt(match[1])

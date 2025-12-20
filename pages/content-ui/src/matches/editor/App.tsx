@@ -110,10 +110,23 @@ export default function App() {
       },
     )
 
+    const unsubscribeGridResponse = postMessageBridge.onEditor(
+      'editor:grid:response',
+      (payload: unknown) => {
+        console.log('💾 Grid response received:', payload)
+        // Forward pixel grid data to main content script via eventBus
+        const gridPayload = payload as {
+          pixels: Array<{ x: number; y: number; color: string }>
+        }
+        eventBus.dispatch('editor:grid:data', gridPayload)
+      },
+    )
+
     return () => {
       unsubscribePixelUpdate()
       unsubscribeSave()
       unsubscribeTileChanged()
+      unsubscribeGridResponse()
     }
   }, [])
 
@@ -126,6 +139,12 @@ export default function App() {
     })
   }
 
+  const handleSave = () => {
+    console.log('💾 Save button clicked - requesting pixel grid')
+    // Request pixel grid from editor
+    postMessageBridge.sendToEditor('editor:get:grid', {})
+  }
+
   if (!isVisible) {
     return null
   }
@@ -133,7 +152,7 @@ export default function App() {
   return (
     <div
       id="editor"
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-50">
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black">
       <div className="relative h-full w-full bg-white">
         <div className="flex h-full flex-col">
           <div className="flex items-center justify-between border-b border-gray-200 p-4">
@@ -142,12 +161,20 @@ export default function App() {
               {tileCoords && ` - Tile (${tileCoords.x}, ${tileCoords.y})`}
               {pixelCoords && ` - Pixel (${pixelCoords.x}, ${pixelCoords.y})`}
             </h1>
-            <button
-              onClick={handleClose}
-              className="rounded bg-red-500 px-4 py-2 font-semibold text-white hover:bg-red-600"
-              type="button">
-              Close
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={handleSave}
+                className="rounded bg-green-500 px-4 py-2 font-semibold text-white hover:bg-green-600"
+                type="button">
+                Save
+              </button>
+              <button
+                onClick={handleClose}
+                className="rounded bg-red-500 px-4 py-2 font-semibold text-white hover:bg-red-600"
+                type="button">
+                Close
+              </button>
+            </div>
           </div>
           <div className="flex-1 overflow-hidden">
             <PixelEditor />

@@ -21,6 +21,9 @@ export type ContentEventMap = {
     source: string
     timestamp: number
   }
+  'editor:grid:data': {
+    pixels: Array<{ x: number; y: number; color: string }>
+  }
   'paint:click': {
     coordinates?: { x: number; y: number }
     timestamp: number

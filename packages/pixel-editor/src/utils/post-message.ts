@@ -7,12 +7,14 @@ export type EditorMessageType =
   | 'editor:pixel:update'
   | 'editor:save'
   | 'editor:tile:changed'
+  | 'editor:grid:response'
 
 export type ParentMessageType =
   | 'editor:load:tile'
   | 'editor:set:color'
   | 'editor:set:tool'
   | 'editor:close'
+  | 'editor:get:grid'
 
 export interface EditorMessage {
   type: EditorMessageType
@@ -44,6 +46,10 @@ export interface SetColorPayload {
 
 export interface SetToolPayload {
   tool: string
+}
+
+export interface GridResponsePayload {
+  pixels: Array<{ x: number; y: number; color: string }>
 }
 
 class PostMessageBridge {
