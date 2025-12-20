@@ -1,7 +1,10 @@
-import { type Color, type PixelCoord } from '@/types'
 import { hayStack } from './library/hay-stack'
 import { hayCart } from './library/hay-cart'
 import { pineTree1 } from './library/pine-tree-1'
+import { bushYellow0 } from './library/bush-yellow-0'
+import { bushesYellowShadow0 } from './library/bushes-yellow-shadow-0'
+import { appleTreeShadow0 } from './library/apple-tree-shadow-0'
+import type { Color, PixelCoord } from '@/types'
 
 export type StampPixel = PixelCoord & Color
 
@@ -65,5 +68,20 @@ export const stamps: Stamp[] = [
     id: 4,
     name: 'Pine Tree 1',
     pixels: pineTree1,
+  },
+  {
+    id: 5,
+    name: 'Bush Yellow',
+    pixels: bushYellow0,
+  },
+  {
+    id: 6,
+    name: 'Bushes Yellow Shadow',
+    pixels: bushesYellowShadow0,
+  },
+  {
+    id: 7,
+    name: 'Apple Tree Shadow',
+    pixels: appleTreeShadow0,
   },
 ]
