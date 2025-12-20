@@ -7,6 +7,7 @@ import {
   usePostMessage,
 } from '@/hooks'
 import { useToolStore, useViewportStore } from '@/stores'
+import { useToolStore, useViewportStore, useUserPixelStore } from '@/stores'
 import { PixelCanvas } from './canvas'
 import { ToolPalette } from './tools'
 import { ColorPalette } from './colors'
@@ -54,12 +55,22 @@ export function App() {
         console.log('📍 Panning to pixel:', { pixelX, pixelY })
         panToPixel(pixelX, pixelY)
       }
+
+      // Clear user pixels
+      console.log('🧹 Clearing user pixels')
+      clearUserPixels()
+    })
     })
 
     return () => {
       unsubscribeLoadTile()
     }
-  }, [onMessage, loadTile, panToPixel])
+  }, [
+    onMessage,
+    loadTile,
+    panToPixel,
+    clearUserPixels,
+  ])
 
   const selectedTool = useToolStore(state => state.selectedTool)
 

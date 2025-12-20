@@ -16,6 +16,7 @@ interface UserPixelStore {
   setPixel: (x: number, y: number, color: PixelColor) => void
   deletePixel: (x: number, y: number) => void
   getPixel: (x: number, y: number) => PixelColor | undefined
+  clearPixels: () => void
 }
 
 export const useUserPixelStore = create<UserPixelStore>()(
@@ -54,6 +55,7 @@ export const useUserPixelStore = create<UserPixelStore>()(
           })
           return { userPixelGrid: newGrid }
         }),
+      clearPixels: () => set({ userPixelGrid: new Map<string, PixelColor>() }),
     }),
     {
       name: 'user-pixel-store',

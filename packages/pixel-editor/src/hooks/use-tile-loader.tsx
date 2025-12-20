@@ -3,7 +3,7 @@ import { useTilePixelStore } from '@/stores'
 import { loadTileFromUrl } from '@/tiles'
 
 export function useTileLoader() {
-  const loadPixels = useTilePixelStore(state => state.loadPixels)
+  const loadTilePixels = useTilePixelStore(state => state.loadPixels)
   const [isLoadingTile, setIsLoadingTile] = useState(false)
 
   const loadTile = useCallback(
@@ -15,7 +15,7 @@ export function useTileLoader() {
         const tileData = await loadTileFromUrl(tileUrl)
 
         // Load the tile pixels into the store (at origin 0,0)
-        loadPixels(tileData.pixels)
+        loadTilePixels(tileData.pixels)
 
         console.log(
           `✅ Loaded tile: ${tileData.width}x${tileData.height} with ${tileData.pixels.size} pixels`,
@@ -27,7 +27,7 @@ export function useTileLoader() {
         setIsLoadingTile(false)
       }
     },
-    [loadPixels],
+    [loadTilePixels],
   )
 
   return { isLoadingTile, loadTile }

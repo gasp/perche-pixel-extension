@@ -16,8 +16,7 @@ export function DebugInfo() {
         fontSize: '12px',
         fontFamily: 'monospace',
       }}
-      className="w-fit"
-    >
+      className="w-fit">
       <div>
         {userPixelGrid.size} pixels drawn / {tilePixelGrid.size} tile pixels
       </div>
