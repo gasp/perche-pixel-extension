@@ -11,7 +11,7 @@ export function StampList({ onStampSelect, selectedStampId }: OwnProps) {
     <div className="flex flex-wrap gap-0 p-[2px]" style={{ width: '80px' }}>
       {stamps.map(stamp => (
         <StampButton
-          key={stamp.id}
+          key={`stamp-${stamp.id}`}
           name={stamp.name}
           pixels={stamp.pixels}
           onClick={() => onStampSelect(stamp.id)}

@@ -486,4 +486,9 @@ export const bushesYellowShadow2: StampPixel[] = [
     y: 4,
     rgb: [104, 70, 52],
   },
+  {
+    x: 3,
+    y: -3,
+    rgb: [249, 221, 59],
+  },
 ]

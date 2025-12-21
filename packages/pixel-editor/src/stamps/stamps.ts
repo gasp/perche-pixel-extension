@@ -93,12 +93,12 @@ export const stamps: Stamp[] = [
     pixels: bushesYellowShadow2,
   },
   {
-    id: 8,
+    id: 9,
     name: 'Bushes Yellow Shadow',
     pixels: bushesYellowShadow3,
   },
   {
-    id: 9,
+    id: 10,
     name: 'Apple Tree Shadow',
     pixels: appleTreeShadow0,
   },
