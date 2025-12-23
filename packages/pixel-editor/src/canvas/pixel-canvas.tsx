@@ -1,9 +1,10 @@
-import { useEffect, useRef, type MouseEvent } from 'react'
+import { useEffect, useRef } from 'react'
 import { useViewportStore, useHoverStore, useTileStore } from '@/stores'
-import type { PixelCoord, PixelMatrix } from '@/types'
 import { drawGrid } from './grid'
-import { calculateBorderSegments } from '../utils/border-calculator'
 import { drawPixels } from './draw-pixels'
+import { calculateBorderSegments } from '../utils/border-calculator'
+import type { PixelCoord, PixelMatrix } from '@/types'
+import type { MouseEvent } from 'react'
 
 interface PixelCanvasProps {
   width: number // Width in pixels (logical pixels)
@@ -48,6 +49,7 @@ export function PixelCanvas({
   const hoveredPixels = useHoverStore(state => state.hoveredPixels)
   const tileOpacity = useTileStore(state => state.opacity)
   const tileBgColor = useTileStore(state => state.bgColor)
+  const userPixelOpacity = useTileStore(state => state.userPixelOpacity)
   const pixelSize = useViewportStore(state => state.pixelSize)
   const increasePixelSize = useViewportStore(state => state.increasePixelSize)
   const decreasePixelSize = useViewportStore(state => state.decreasePixelSize)
@@ -62,6 +64,7 @@ export function PixelCanvas({
     hoveredPixels: PixelCoord[]
     tileOpacity: number
     tileBgColor: string
+    userPixelOpacity: number
   }>({
     tileVisualPixelMatrix,
     userVisualPixelMatrix,
@@ -72,6 +75,7 @@ export function PixelCanvas({
     hoveredPixels: [],
     tileOpacity: 0.5,
     tileBgColor: 'white',
+    userPixelOpacity: 1,
   })
 
   const { offset } = useViewportStore()
@@ -88,6 +92,7 @@ export function PixelCanvas({
       hoveredPixels,
       tileOpacity,
       tileBgColor,
+      userPixelOpacity,
     }
   }, [
     tileVisualPixelMatrix,
@@ -99,6 +104,7 @@ export function PixelCanvas({
     hoveredPixels,
     tileOpacity,
     tileBgColor,
+    userPixelOpacity,
   ])
 
   function render() {
@@ -116,6 +122,7 @@ export function PixelCanvas({
       hoveredPixels,
       tileOpacity,
       tileBgColor,
+      userPixelOpacity,
     } = renderDataRef.current
 
     const currentOffsetX = offset.x * pixelSize
@@ -147,6 +154,7 @@ export function PixelCanvas({
       ctx,
       pixelMatrix: userVisualPixelMatrix,
       pixelSize,
+      opacity: userPixelOpacity,
     })
 
     // Draw hover highlight borders
