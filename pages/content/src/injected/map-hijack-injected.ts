@@ -41,10 +41,11 @@ declare global {
 
       // Clear the entire map
       if (window.currentMapRef) {
+        const mapSize = window.currentMapRef.size
         window.currentMapRef.clear()
-        console.log('🎯 [Page Context] Cleared map')
+        console.log(`🎯 [Page Context] Cleared map (had ${mapSize} entries)`)
       } else {
-        console.warn('🎯 [Page Context] No map reference available')
+        console.warn('🎯 [Page Context] No map reference available to clear')
       }
     }
 
@@ -58,9 +59,13 @@ declare global {
       // Add the new pixel to the stored Map reference
       if (window.currentMapRef) {
         originalSet.call(window.currentMapRef, key, value)
-        console.log('🎯 [Page Context] Added pixel to map:', key)
+        console.log(
+          `🎯 [Page Context] Added pixel to map: ${key} (map now has ${window.currentMapRef.size} entries)`,
+        )
       } else {
-        console.warn('🎯 [Page Context] No map reference available')
+        console.warn(
+          '🎯 [Page Context] No map reference available to add pixel',
+        )
       }
     }
   })
@@ -79,8 +84,16 @@ declare global {
     }
 
     if (isTrigger && match) {
-      // Store reference to this Map instance for later use
+      // CRITICAL: Always update the map reference to the CURRENT instance
+      // This ensures we're working with the fresh map for each save operation
+      const previousMapRef = window.currentMapRef
       window.currentMapRef = this as Map<unknown, unknown>
+
+      if (previousMapRef !== window.currentMapRef) {
+        console.log('🎯 [Map.set] Map reference UPDATED to new instance')
+      } else {
+        console.log('🎯 [Map.set] Map reference captured (same instance)')
+      }
 
       // Extract numbers: match[0] is full string, match[1-5] are captures
       const tX = parseInt(match[1])

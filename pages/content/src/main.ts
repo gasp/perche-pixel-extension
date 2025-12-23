@@ -91,14 +91,31 @@ export const setupEventListeners = () => {
         console.log('[Main] Processing', pixels.length, 'pixels')
 
         // 1. click on Paint
-        ;(
-          document.querySelector('.bottom-0 .btn-primary') as HTMLElement
-        ).click()
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        // 2. select the color 0
-        ;(document.querySelector('#color-0') as HTMLElement).click()
-        await new Promise(resolve => setTimeout(resolve, 1000))
+        const startPaintButton: HTMLButtonElement | null =
+          document.querySelector('.bottom-0 button.btn-primary')
+        if (startPaintButton) {
+          startPaintButton.click()
+        } else {
+          console.log('[Main] Could not find start paint button')
+          throw new Error('Could not find start paint button')
+        }
+        await new Promise(resolve => setTimeout(resolve, 100))
+
+        // 2. select the color 0 to capture the fresh map reference
+        const colorElement: HTMLElement | null =
+          document.querySelector('#color-0')
+
+        if (colorElement) {
+          colorElement.click()
+          console.log('[Main] Clicked #color-0 to capture map reference')
+        } else {
+          console.log('[Main] Could not find #color-0 element')
+          throw new Error('Could not find #color-0 element')
+        }
+
+        await new Promise(resolve => setTimeout(resolve, 200))
         // this should catch the map reference in the window.currentMapRef
+        // IMPORTANT: Increased timeout to ensure map reference is captured
 
         // 3. clear the marker pixel and add pixels to the map
         console.log('[Main] Dispatching pixeldata:clear-marker event')
@@ -112,27 +129,25 @@ export const setupEventListeners = () => {
         }
 
         // wait for the pixels to be added to the map
-        await new Promise(resolve => setTimeout(resolve, 1000))
+        await new Promise(resolve => setTimeout(resolve, 100))
 
         // 4. click on Paint button again actually appends the write
-        ;(
-          document.querySelector('.bottom-0 .btn-primary') as HTMLElement
-        ).click()
-
-        const colorElement = document.querySelector('#color-0')
-
-        if (colorElement) {
-          console.log('[Main] Found #color-0, simulating click')
-          ;(colorElement as HTMLElement).click()
-          console.log('[Main] Clicked #color-0')
-        } else {
-          console.log('[Main] Could not find #color-0 element')
+        const paintButton: HTMLButtonElement | null = document.querySelector(
+          '.bottom-0 button.btn-primary',
+        )
+        if (!paintButton) {
+          console.log('[Main] Could not find paint button')
+          throw new Error('Could not find paint button')
         }
 
-        /// maybe this does not work and I should only store these data and use the eventBus.on('pixeldata:marker', event => { to paint
+        if (paintButton) {
+          paintButton.click()
+        } else {
+          console.log('[Main] Could not find paint button')
+          throw new Error('Could not find paint button')
+        }
 
-        // TODO: Later we will iterate through pixels and add them to the map
-        // For now, just log the first pixel
+        // log the first pixel
         if (pixels.length > 0) {
           console.log('[Main] First pixel:', pixels[0])
         }

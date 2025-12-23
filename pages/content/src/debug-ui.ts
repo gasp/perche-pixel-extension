@@ -285,7 +285,7 @@ export const initDebugUI = (): (() => void) => {
   const content = document.createElement('div')
   content.id = 'perche-debug-content'
   content.style.cssText = `
-    display: flex;
+    display: none;
     flex-direction: column;
   `
 
