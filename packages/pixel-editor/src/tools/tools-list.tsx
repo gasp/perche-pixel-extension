@@ -4,10 +4,12 @@ import {
   Move,
   Eraser,
   TreePine,
+  Pipette,
   FileQuestionMark,
 } from 'lucide-react'
 import { ToolButton } from './button'
-import { TOOLS, type ToolType } from './tools'
+import { TOOLS } from './tools'
+import type { ToolType } from './tools'
 
 type OwnProps = {
   onToolSelect: (tool: ToolType) => void
@@ -26,6 +28,8 @@ const getIcon = (icon: string) => {
       return <Eraser />
     case 'TreePine':
       return <TreePine />
+    case 'Pipette':
+      return <Pipette />
     default:
       return <FileQuestionMark />
   }

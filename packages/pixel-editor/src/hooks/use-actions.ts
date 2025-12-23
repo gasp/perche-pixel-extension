@@ -7,19 +7,21 @@ import {
   useFillStore,
   useBrushSizeStore,
   useStampStore,
+  useTilePixelStore,
   FillMode,
 } from '@/stores'
-import type { PixelColor } from '@/types'
 import { visualToTheoretical } from '../utils/coordinate-converter'
 import { getCirclePattern } from '../actions/brush'
 import { ToolType } from '../tools/tools'
 import { colors } from '../colors/colors'
 import { textures } from '../textures/textures'
 import { stamps } from '../stamps/stamps'
+import type { PixelColor } from '@/types'
 
 export function useActions() {
   const selectedTool = useToolStore(state => state.selectedTool)
   const selectedColorId = useFillStore(state => state.selectedColorId)
+  const setSelectedColorId = useFillStore(state => state.setSelectedColorId)
   const selectedTextureId = useFillStore(state => state.selectedTextureId)
   const fillMode = useFillStore(state => state.fillMode)
   const brushSize = useBrushSizeStore(state => state.selectedSize)
@@ -27,6 +29,8 @@ export function useActions() {
   const offset = useViewportStore(state => state.offset)
   const moveViewport = useViewportStore(state => state.moveViewport)
   const setPixel = useUserPixelStore(state => state.setPixel)
+  const getPixel = useUserPixelStore(state => state.getPixel)
+  const tilePixelGrid = useTilePixelStore(state => state.tilePixelGrid)
   const setHoveredPixels = useHoverStore(state => state.setHoveredPixels)
   const clearHoveredPixels = useHoverStore(state => state.clearHoveredPixels)
 
@@ -65,12 +69,56 @@ export function useActions() {
     return `rgb(${r}, ${g}, ${b})`
   }
 
+  // Helper function to parse RGB string and find matching color
+  const findColorIdFromRgb = (rgbString: string | null): number | null => {
+    if (!rgbString) return null
+
+    // Parse rgb(r, g, b) format
+    const match = rgbString.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/)
+    if (!match) return null
+
+    const r = parseInt(match[1], 10)
+    const g = parseInt(match[2], 10)
+    const b = parseInt(match[3], 10)
+
+    // Find matching color in colors array
+    const matchingColor = colors.find(
+      color => color.rgb[0] === r && color.rgb[1] === g && color.rgb[2] === b,
+    )
+
+    return matchingColor ? matchingColor.id : null
+  }
+
+  const getPixelColorAt = (x: number, y: number): PixelColor => {
+    const key = `${x},${y}`
+
+    // Check user pixels first (these are on top)
+    const userPixel = getPixel(x, y)
+    if (userPixel) return userPixel
+
+    const tilePixel = tilePixelGrid.get(key)
+    if (tilePixel) return tilePixel
+
+    return null
+  }
+
   const handleClick = (visualX: number, visualY: number) => {
-    console.log('handleClick', { visualX, visualY })
     if (selectedTool === ToolType.MOVE) return
 
     // Convert visual coordinates to theoretical infinite grid coordinates
     const theoretical = visualToTheoretical(visualX, visualY, offset)
+
+    // Handle pipette tool - pick color from pixel
+    if (selectedTool === ToolType.PIPETTE) {
+      const pixelColor = getPixelColorAt(theoretical.x, theoretical.y)
+      if (pixelColor) {
+        const colorId = findColorIdFromRgb(pixelColor)
+        if (colorId !== null) {
+          setSelectedColorId(colorId)
+        }
+      }
+      return
+    }
 
     // Paint based on tool type
     if (selectedTool === ToolType.BRUSH) {
@@ -120,8 +168,11 @@ export function useActions() {
       for (const { dx, dy } of brushPattern) {
         affectedPixels.push({ x: visualX + dx, y: visualY + dy })
       }
-    } else if (selectedTool === ToolType.PENCIL) {
-      // Single pixel
+    } else if (
+      selectedTool === ToolType.PENCIL ||
+      selectedTool === ToolType.PIPETTE
+    ) {
+      // Single pixel for pencil and pipette
       affectedPixels.push({ x: visualX, y: visualY })
     } else if (selectedTool === ToolType.STAMP) {
       // Show stamp pattern preview
@@ -147,6 +198,9 @@ export function useActions() {
 
     if (selectedTool === ToolType.MOVE) {
       setIsDragging(true)
+    } else if (selectedTool === ToolType.PIPETTE) {
+      // Pipette tool - just pick color on click, don't drag
+      handleClick(pixelX, pixelY)
     } else {
       // Drawing tools (pencil, brush, eraser) - start drawing
       setIsDrawing(true)
