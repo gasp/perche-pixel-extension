@@ -136,9 +136,21 @@ export const setupEventListeners = () => {
         if (pixels.length > 0) {
           console.log('[Main] First pixel:', pixels[0])
         }
+
+        // Dispatch success event
+        console.log('[Main] Save completed successfully')
+        eventBus.dispatch('editor:save:success', {
+          pixelCount: pixels.length,
+          timestamp: Date.now(),
+        })
       }
     } catch (error) {
       console.error('[Main] Error processing pixel grid data:', error)
+      // Dispatch error event
+      eventBus.dispatch('editor:save:error', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        timestamp: Date.now(),
+      })
     }
   })
 

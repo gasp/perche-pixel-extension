@@ -24,6 +24,14 @@ export type ContentEventMap = {
   'editor:grid:data': {
     pixels: Array<{ x: number; y: number; color: string }>
   }
+  'editor:save:success': {
+    pixelCount: number
+    timestamp: number
+  }
+  'editor:save:error': {
+    error: string
+    timestamp: number
+  }
   'paint:click': {
     coordinates?: { x: number; y: number }
     timestamp: number

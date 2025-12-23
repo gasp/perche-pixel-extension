@@ -12,6 +12,9 @@ export default function App() {
     x: number
     y: number
   } | null>(null)
+  const [saveStatus, setSaveStatus] = useState<
+    'idle' | 'saving' | 'success' | 'error'
+  >('idle')
 
   // Dynamically inject/remove CSS when editor visibility changes
   useEffect(() => {
@@ -118,15 +121,32 @@ export default function App() {
         const gridPayload = payload as {
           pixels: Array<{ x: number; y: number; color: string }>
         }
+        setSaveStatus('saving')
         eventBus.dispatch('editor:grid:data', gridPayload)
       },
     )
+
+    const unsubscribeSaveSuccess = eventBus.on('editor:save:success', event => {
+      console.log('✅ Save successful:', event.detail)
+      setSaveStatus('success')
+      // Reset to idle after 2 seconds
+      setTimeout(() => setSaveStatus('idle'), 2000)
+    })
+
+    const unsubscribeSaveError = eventBus.on('editor:save:error', event => {
+      console.error('❌ Save failed:', event.detail)
+      setSaveStatus('error')
+      // Reset to idle after 3 seconds
+      setTimeout(() => setSaveStatus('idle'), 3000)
+    })
 
     return () => {
       unsubscribePixelUpdate()
       unsubscribeSave()
       unsubscribeTileChanged()
       unsubscribeGridResponse()
+      unsubscribeSaveSuccess()
+      unsubscribeSaveError()
     }
   }, [])
 
@@ -155,8 +175,8 @@ export default function App() {
       className="fixed inset-0 z-[9999] flex items-center justify-center bg-black">
       <div className="relative h-full w-full bg-white">
         <div className="flex h-full flex-col">
-          <div className="flex items-center justify-between border-b border-gray-200 p-4">
-            <h1 className="text-xl font-bold">
+          <div className="flex items-center justify-between border-b border-gray-200 p-2">
+            <h1 className="text-sm font-bold">
               Pixel Editor
               {tileCoords && ` - Tile (${tileCoords.x}, ${tileCoords.y})`}
               {pixelCoords && ` - Pixel (${pixelCoords.x}, ${pixelCoords.y})`}
@@ -164,13 +184,25 @@ export default function App() {
             <div className="flex gap-2">
               <button
                 onClick={handleSave}
-                className="rounded bg-green-500 px-4 py-2 font-semibold text-white hover:bg-green-600"
+                disabled={saveStatus === 'saving'}
+                className={`rounded px-2 py-1 text-sm font-semibold text-white transition-colors ${
+                  saveStatus === 'saving'
+                    ? 'cursor-not-allowed bg-gray-400'
+                    : saveStatus === 'success'
+                      ? 'bg-green-600 hover:bg-green-700'
+                      : saveStatus === 'error'
+                        ? 'bg-red-600 hover:bg-red-700'
+                        : 'bg-green-500 hover:bg-green-600'
+                }`}
                 type="button">
-                Save
+                {saveStatus === 'saving' && '⏳ Saving...'}
+                {saveStatus === 'success' && '✅ Saved!'}
+                {saveStatus === 'error' && '❌ Error'}
+                {saveStatus === 'idle' && 'Save'}
               </button>
               <button
                 onClick={handleClose}
-                className="rounded bg-red-500 px-4 py-2 font-semibold text-white hover:bg-red-600"
+                className="rounded bg-red-500 px-2 py-1 font-semibold text-white hover:bg-red-600"
                 type="button">
                 Close
               </button>
