@@ -102,6 +102,59 @@ export function useActions() {
     return null
   }
 
+  // Find contiguous transparent pixels using clockwise rotation
+  // Starting from the first pixel under the cursor
+  const findContiguousTransparentPixels = (
+    startX: number,
+    startY: number,
+  ): { x: number; y: number }[] => {
+    const result: { x: number; y: number }[] = []
+    const visited = new Set<string>()
+    const queue: { x: number; y: number }[] = []
+
+    // Check if start pixel is transparent
+    const startPixel = getPixelColorAt(startX, startY)
+    if (startPixel !== null) {
+      // Not transparent, return empty array
+      return []
+    }
+
+    // 4-directional connectivity (clockwise): right, down, left, up
+    // This prevents selection from passing through diagonal gaps
+    const directions = [
+      { dx: 1, dy: 0 }, // right
+      { dx: 0, dy: 1 }, // down
+      { dx: -1, dy: 0 }, // left
+      { dx: 0, dy: -1 }, // up
+    ]
+
+    queue.push({ x: startX, y: startY })
+    visited.add(`${startX},${startY}`)
+
+    while (queue.length > 0 && result.length < 1024) {
+      const current = queue.shift()!
+      result.push(current)
+
+      // Check all directions in clockwise order
+      for (const dir of directions) {
+        const nextX = current.x + dir.dx
+        const nextY = current.y + dir.dy
+        const key = `${nextX},${nextY}`
+
+        if (!visited.has(key)) {
+          visited.add(key)
+          const pixel = getPixelColorAt(nextX, nextY)
+          if (pixel === null) {
+            // Transparent pixel found
+            queue.push({ x: nextX, y: nextY })
+          }
+        }
+      }
+    }
+
+    return result
+  }
+
   const handleClick = (visualX: number, visualY: number) => {
     if (selectedTool === ToolType.MOVE) return
 
@@ -116,6 +169,20 @@ export function useActions() {
         if (colorId !== null) {
           setSelectedColorId(colorId)
         }
+      }
+      return
+    }
+
+    // Handle paint bucket tool - fill contiguous transparent pixels
+    if (selectedTool === ToolType.PAINT_BUCKET) {
+      const pixelsToFill = findContiguousTransparentPixels(
+        theoretical.x,
+        theoretical.y,
+      )
+      // Fill all the transparent pixels with the current color
+      for (const pixel of pixelsToFill) {
+        const color = getColorForPixel(pixel.x, pixel.y)
+        setPixel(pixel.x, pixel.y, color)
       }
       return
     }
@@ -158,7 +225,21 @@ export function useActions() {
     // Calculate affected pixels based on tool
     const affectedPixels = []
 
-    if (selectedTool === ToolType.BRUSH) {
+    if (selectedTool === ToolType.PAINT_BUCKET) {
+      // Convert visual coordinates to theoretical for paint bucket
+      const theoretical = visualToTheoretical(visualX, visualY, offset)
+
+      // Find contiguous transparent pixels
+      const contiguousPixels = findContiguousTransparentPixels(
+        theoretical.x,
+        theoretical.y,
+      )
+
+      // Convert back to visual coordinates for display
+      for (const pixel of contiguousPixels) {
+        affectedPixels.push({ x: pixel.x - offset.x, y: pixel.y - offset.y })
+      }
+    } else if (selectedTool === ToolType.BRUSH) {
       // Show circular brush preview
       for (const { dx, dy } of brushPattern) {
         affectedPixels.push({ x: visualX + dx, y: visualY + dy })
@@ -198,8 +279,11 @@ export function useActions() {
 
     if (selectedTool === ToolType.MOVE) {
       setIsDragging(true)
-    } else if (selectedTool === ToolType.PIPETTE) {
-      // Pipette tool - just pick color on click, don't drag
+    } else if (
+      selectedTool === ToolType.PIPETTE ||
+      selectedTool === ToolType.PAINT_BUCKET
+    ) {
+      // Pipette and paint bucket tools - just execute on click, don't drag
       handleClick(pixelX, pixelY)
     } else {
       // Drawing tools (pencil, brush, eraser) - start drawing

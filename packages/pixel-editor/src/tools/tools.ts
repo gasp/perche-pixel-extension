@@ -5,6 +5,7 @@ export const ToolType = {
   MOVE: 'move',
   STAMP: 'stamp',
   PIPETTE: 'pipette',
+  PAINT_BUCKET: 'paint_bucket',
 } as const
 
 export type ToolType = (typeof ToolType)[keyof typeof ToolType]
@@ -34,6 +35,11 @@ export const TOOLS: ToolDetails[] = [
     id: ToolType.PIPETTE,
     name: 'Pipette (I)',
     icon: 'Pipette',
+  },
+  {
+    id: ToolType.PAINT_BUCKET,
+    name: 'Paint Bucket (G)',
+    icon: 'PaintBucket',
   },
   {
     id: ToolType.MOVE,

@@ -5,6 +5,7 @@ import {
   Eraser,
   TreePine,
   Pipette,
+  PaintBucket,
   FileQuestionMark,
 } from 'lucide-react'
 import { ToolButton } from './button'
@@ -30,6 +31,8 @@ const getIcon = (icon: string) => {
       return <TreePine />
     case 'Pipette':
       return <Pipette />
+    case 'PaintBucket':
+      return <PaintBucket />
     default:
       return <FileQuestionMark />
   }
