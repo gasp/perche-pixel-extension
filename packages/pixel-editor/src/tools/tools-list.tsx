@@ -7,6 +7,7 @@ import {
   Pipette,
   PaintBucket,
   FileQuestionMark,
+  SunMoon,
 } from 'lucide-react'
 import { ToolButton } from './button'
 import { TOOLS } from './tools'
@@ -33,6 +34,8 @@ const getIcon = (icon: string) => {
       return <Pipette />
     case 'PaintBucket':
       return <PaintBucket />
+    case 'SunMoon':
+      return <SunMoon />
     default:
       return <FileQuestionMark />
   }

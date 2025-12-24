@@ -1,5 +1,6 @@
 import { ToolType } from '@/tools/tools'
 import { visualToTheoretical } from '@/utils/coordinate-converter'
+import { getDarkerColor } from './color-darkening'
 import type { PixelColor } from '@/types'
 
 export type ToolHandlerParams = {
@@ -8,6 +9,7 @@ export type ToolHandlerParams = {
   offset: { x: number; y: number }
   getColorForPixel: (x: number, y: number) => PixelColor
   getPixelColorAt: (x: number, y: number) => PixelColor
+  getTileColorAt: (x: number, y: number) => PixelColor
   setPixel: (x: number, y: number, color: PixelColor) => void
   setSelectedColorId: (id: number) => void
   findColorIdFromRgb: (rgb: string | null) => number | null
@@ -119,6 +121,30 @@ export function handleStampTool(params: ToolHandlerParams) {
 }
 
 /**
+ * Handle darken tool - read tile color and paint darker version
+ */
+export function handleDarkenTool(params: ToolHandlerParams) {
+  const theoretical = visualToTheoretical(
+    params.visualX,
+    params.visualY,
+    params.offset,
+  )
+
+  // Get the color from the tile only (not user pixels)
+  const tileColor = params.getTileColorAt(theoretical.x, theoretical.y)
+
+  if (tileColor) {
+    // Get the darker version of this color
+    const darkerColor = getDarkerColor(tileColor)
+
+    if (darkerColor) {
+      // Paint the darker color to user layer
+      params.setPixel(theoretical.x, theoretical.y, darkerColor)
+    }
+  }
+}
+
+/**
  * Main click handler that routes to the appropriate tool handler
  */
 export function handleToolClick(
@@ -145,6 +171,9 @@ export function handleToolClick(
       break
     case ToolType.STAMP:
       handleStampTool(params)
+      break
+    case ToolType.DARKEN:
+      handleDarkenTool(params)
       break
   }
 }

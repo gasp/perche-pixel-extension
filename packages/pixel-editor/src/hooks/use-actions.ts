@@ -65,6 +65,11 @@ export function useActions() {
   const getPixelColorAtWrapper = (x: number, y: number): PixelColor =>
     getPixelColorAt(x, y, getPixel, tilePixelGrid)
 
+  const getTileColorAtWrapper = (x: number, y: number): PixelColor => {
+    const key = `${x},${y}`
+    return tilePixelGrid.get(key) || null
+  }
+
   const findContiguousTransparentPixelsWrapper = (
     x: number,
     y: number,
@@ -78,6 +83,7 @@ export function useActions() {
       offset,
       getColorForPixel: getColorForPixelWrapper,
       getPixelColorAt: getPixelColorAtWrapper,
+      getTileColorAt: getTileColorAtWrapper,
       setPixel,
       setSelectedColorId,
       findColorIdFromRgb,

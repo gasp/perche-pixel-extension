@@ -67,7 +67,8 @@ export function handleToolHover(
 
     case ToolType.PENCIL:
     case ToolType.PIPETTE:
-      // Single pixel for pencil and pipette
+    case ToolType.DARKEN:
+      // Single pixel for pencil, pipette, and darken
       affectedPixels.push({ x: params.visualX, y: params.visualY })
       break
 

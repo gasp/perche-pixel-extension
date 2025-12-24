@@ -6,6 +6,7 @@ export const ToolType = {
   STAMP: 'stamp',
   PIPETTE: 'pipette',
   PAINT_BUCKET: 'paint_bucket',
+  DARKEN: 'darken',
 } as const
 
 export type ToolType = (typeof ToolType)[keyof typeof ToolType]
@@ -25,6 +26,11 @@ export const TOOLS: ToolDetails[] = [
     id: ToolType.ERASER,
     name: 'Eraser',
     icon: 'Eraser',
+  },
+  {
+    id: ToolType.DARKEN,
+    name: 'Darken (D)',
+    icon: 'SunMoon',
   },
   {
     id: ToolType.STAMP,
