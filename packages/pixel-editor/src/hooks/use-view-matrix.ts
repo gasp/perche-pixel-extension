@@ -4,8 +4,8 @@ import {
   useTilePixelStore,
   useViewportStore,
 } from '@/stores'
-import type { PixelMatrix } from '@/types'
 import { theoreticalToVisual } from '../utils/coordinate-converter'
+import type { PixelMatrix } from '@/types'
 
 export function useViewMatrix(): {
   userVisualPixelMatrix: PixelMatrix

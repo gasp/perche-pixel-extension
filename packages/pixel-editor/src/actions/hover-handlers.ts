@@ -1,5 +1,5 @@
 import { ToolType } from '@/tools/tools'
-import { visualToTheoretical } from '@/utils/coordinate-converter'
+import { theoreticalToVisual } from '@/utils/coordinate-converter'
 
 export type HoverHandlerParams = {
   visualX: number
@@ -32,7 +32,7 @@ export function handleToolHover(
   switch (selectedTool) {
     case ToolType.PAINT_BUCKET: {
       // Convert visual coordinates to theoretical for paint bucket
-      const theoretical = visualToTheoretical(
+      const theoretical = theoreticalToVisual(
         params.visualX,
         params.visualY,
         params.offset,
@@ -47,8 +47,8 @@ export function handleToolHover(
       // Convert back to visual coordinates for display
       for (const pixel of contiguousPixels) {
         affectedPixels.push({
-          x: pixel.x - params.offset.x,
-          y: pixel.y - params.offset.y,
+          x: pixel.x + params.offset.x,
+          y: pixel.y + params.offset.y,
         })
       }
       break
