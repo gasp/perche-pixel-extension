@@ -40,14 +40,6 @@ const manifest = {
       matches: ['https://wplace.live/*'],
       js: ['content/wplace.iife.js', 'content-ui/editor.iife.js'],
     },
-    // {
-    //   matches: ['http://*/*', 'https://*/*', '<all_urls>'],
-    //   js: ['content-ui/all.iife.js'],
-    // },
-    // {
-    //   matches: ['http://*/*', 'https://*/*', '<all_urls>'],
-    //   css: ['content.css'],
-    // },
   ],
   web_accessible_resources: [
     {
