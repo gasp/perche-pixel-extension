@@ -25,9 +25,8 @@ const manifest = {
   },
   version: packageJson.version,
   description: 'Chrome extension for pixel drawing on wplace.live',
-  host_permissions: ['<all_urls>'],
-  permissions: ['storage', 'scripting', 'tabs', 'notifications'],
-  options_page: 'options/index.html',
+  host_permissions: ['https://wplace.live/*'],
+  permissions: ['storage', 'scripting'],
   background: {
     service_worker: 'background.js',
     type: 'module',
@@ -44,7 +43,7 @@ const manifest = {
   web_accessible_resources: [
     {
       resources: ['*.js', '*.css', '*.svg', 'icon-128.png', 'icon-34.png'],
-      matches: ['*://*/*'],
+      matches: ['https://wplace.live/*'],
     },
   ],
 } satisfies ManifestType
