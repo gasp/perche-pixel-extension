@@ -19,7 +19,10 @@ const findPaintButton = (container: HTMLElement): HTMLElement | null => {
 
   for (const button of Array.from(buttons)) {
     // Look for button containing "Paint" text and paint icon
-    const hasText = button.textContent?.trim().includes('Paint')
+    const hasText =
+      button.textContent?.trim().includes('Paint') ||
+      button.textContent?.trim().includes('Peindre') ||
+      button.textContent?.trim().includes('Pintar')
     const hasPaintIcon = button.querySelector('svg path[d*="M240-120"]')
 
     if (hasText && hasPaintIcon) {
