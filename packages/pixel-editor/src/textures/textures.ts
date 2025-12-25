@@ -31,7 +31,7 @@ function createFieldTextureRenderer(
 
 // Import colors from the color palette
 const yellow = colors.find(c => c.id === 10)! // Yellow
-const orange = colors.find(c => c.id === 8)! // Orange
+const gold = colors.find(c => c.id === 9)! // Gold
 const lightGoldenRod = colors.find(c => c.id === 39)! // Light Goldenrod
 const goldenRod = colors.find(c => c.id === 38)! // Goldenrod
 const lightOlive = colors.find(c => c.id === 42)! // Light Olive
@@ -45,8 +45,8 @@ export const textures: Texture[] = [
     id: 0,
     name: 'Wheat',
     primary: yellow,
-    secondary: orange,
-    renderer: createFieldTextureRenderer(yellow, orange),
+    secondary: gold,
+    renderer: createFieldTextureRenderer(yellow, gold),
   },
   {
     id: 1,
