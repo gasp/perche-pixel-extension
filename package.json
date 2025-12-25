@@ -1,6 +1,6 @@
 {
   "name": "perche-pixel-extension",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "perche pixel editor extension",
   "license": "MIT",
   "private": true,
@@ -32,6 +32,7 @@
     "format": "turbo format --continue -- --cache --cache-location node_modules/.cache/.prettiercache",
     "prepare": "husky",
     "update-version": "bash bash-scripts/update_version.sh",
+    "bump-version": "bash bash-scripts/bump-version.sh",
     "copy-env": "bash bash-scripts/copy_env.sh",
     "set-global-env": "bash bash-scripts/set_global_env.sh",
     "module-manager": "pnpm -F module-manager start",
