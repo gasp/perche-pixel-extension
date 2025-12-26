@@ -11,7 +11,7 @@ Perche-pixel-extenion spanws an editor on wplace
 
 ## Contribute
 
-## Installation
+### Install locally
 
 1. Run `pnpm install` (you may have to install pnpm globally: `npm install -g pnpm`)
 2. Run `pnpm update-version <version>` for change the `version` to the desired version of your extension.
