@@ -7,6 +7,8 @@ import { bushesYellowShadow1 } from './library/bushes-yellow-shadow-1'
 import { bushesYellowShadow2 } from './library/bushes-yellow-shadow-2'
 import { bushesYellowShadow3 } from './library/bushes-yellow-shadow-3'
 import { appleTreeShadow0 } from './library/apple-tree-shadow-0'
+import { heartGreen } from './library/heart-green'
+import { pineGrove01 } from './library/pine-grove-01'
 import type { Color, PixelCoord } from '@/types'
 
 export type StampPixel = PixelCoord & Color
@@ -101,5 +103,15 @@ export const stamps: Stamp[] = [
     id: 10,
     name: 'Apple Tree Shadow',
     pixels: appleTreeShadow0,
+  },
+  {
+    id: 11,
+    name: 'Heart Green',
+    pixels: heartGreen,
+  },
+  {
+    id: 12,
+    name: 'Pine Grove 01',
+    pixels: pineGrove01,
   },
 ]
