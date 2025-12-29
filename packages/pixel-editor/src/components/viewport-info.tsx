@@ -1,5 +1,7 @@
 import { useViewportStore } from '@/stores'
 
+const DEVICE_PIXEL_RATIO = window.devicePixelRatio || 1
+
 export function ViewportInfo() {
   const { x, y } = useViewportStore(state => state.offset)
   const { width, height } = useViewportStore(state => state.dimensions)
@@ -12,12 +14,12 @@ export function ViewportInfo() {
         right: '10px',
         backgroundColor: 'rgba(0, 0, 0, 0.7)',
         color: 'white',
-        padding: '8px 12px',
-        borderRadius: '4px',
-        fontSize: '12px',
+        padding: '6px 8px',
+        borderRadius: '2px',
+        fontSize: '6px',
         fontFamily: 'monospace',
-      }}
-    >
+        textTransform: 'uppercase',
+      }}>
       <div>
         <div>
           Offset: ({x}, {y})
@@ -25,7 +27,9 @@ export function ViewportInfo() {
         <div>
           Dimensions: ({width} × {height})
         </div>
-        <div>Pixel Size: {pixelSize}</div>
+        <div>
+          Pixel Size: {pixelSize} ({DEVICE_PIXEL_RATIO}x)
+        </div>
       </div>
     </div>
   )

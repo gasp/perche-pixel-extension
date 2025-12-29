@@ -1,5 +1,5 @@
 import { useTilePixelStore } from '@/stores'
-import { Palette } from '../components'
+import { Palette } from '@/components'
 import { TilePreview } from './tile-preview'
 import { TileList } from './tile-list'
 

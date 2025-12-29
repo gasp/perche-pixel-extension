@@ -19,10 +19,9 @@ export function TileButton({
       title={title}
       className={`flex h-[20px] w-[20px] items-center justify-center p-[3px] text-black transition-none ${
         isActive
-          ? 'border-[1px] border-t-[#7a7a7a] border-r-[#e8e8e8] border-b-[#e8e8e8] border-l-[#7a7a7a] bg-[#b0b0b0]'
-          : 'border-[1px] border-t-[#ffffff] border-r-[#7a7a7a] border-b-[#7a7a7a] border-l-[#ffffff] bg-[#dcdcdc] hover:bg-[#e8e8e8]'
-      }`}
-    >
+          ? 'border-[1px] border-b-[#e8e8e8] border-l-[#7a7a7a] border-r-[#e8e8e8] border-t-[#7a7a7a] bg-[#b0b0b0]'
+          : 'border-[1px] border-b-[#7a7a7a] border-l-[#ffffff] border-r-[#7a7a7a] border-t-[#ffffff] bg-[#dcdcdc] hover:bg-[#e8e8e8]'
+      }`}>
       <Icon size={14} />
     </button>
   )

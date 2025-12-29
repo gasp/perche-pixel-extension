@@ -1,11 +1,15 @@
-import { useState, useRef, useEffect, type ReactNode } from 'react'
-import { usePaletteStore, type PaletteId } from '@/stores'
+import { useState, useRef, useEffect } from 'react'
+import { usePaletteStore } from '@/stores'
+import type { ReactNode } from 'react'
+import type { PaletteId } from '@/stores'
 
 export type OwnProps = {
   children: ReactNode
   title?: string
   paletteId: PaletteId
 }
+
+const DEVICE_PIXEL_RATIO = window.devicePixelRatio || 1
 
 export function Palette({ children, title, paletteId }: OwnProps) {
   const position = usePaletteStore(state => state.palettes[paletteId].position)
@@ -77,27 +81,37 @@ export function Palette({ children, title, paletteId }: OwnProps) {
       }}
       role="toolbar"
       aria-label={title}
-      onMouseDown={handleMouseDown}
-    >
+      onMouseDown={handleMouseDown}>
       <div
-        className="h-3 w-full cursor-move border-b border-black p-[1px] select-none"
+        role="menubar"
+        tabIndex={0}
+        className="h-3 w-full cursor-move select-none border-b border-black p-[1px]"
         onMouseDown={handleDragStart}
         onDoubleClick={handleDoubleClick}
-        aria-label={title ? `Drag ${title}` : 'Drag palette'}
-      >
+        aria-label={title ? `Drag ${title}` : 'Drag palette'}>
         {isCollapsed && title ? (
           <div className="flex h-full w-full items-center justify-center bg-[#dcdcdc] px-2">
-            <span className="text-[6px] font-bold tracking-wide text-black uppercase">
-              {title}
+            <span className="text-[6px] font-bold uppercase tracking-wide text-black">
+              {DEVICE_PIXEL_RATIO} {title}
             </span>
           </div>
         ) : (
           <div
             className="h-full w-full bg-gray-400"
-            style={{
-              backgroundImage: 'radial-gradient(white 1px, transparent 0)',
-              backgroundSize: '2px 2px',
-            }}
+            style={
+              DEVICE_PIXEL_RATIO >= 2
+                ? {
+                    backgroundImage:
+                      'radial-gradient(white 1px, transparent 0)',
+                    backgroundSize: '2px 2px',
+                  }
+                : {
+                    // this fallback still needs some tweaking
+                    backgroundImage:
+                      'radial-gradient(white 1.75px, transparent 0)',
+                    backgroundSize: '3.4px 3.4px',
+                  }
+            }
           />
         )}
       </div>

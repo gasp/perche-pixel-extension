@@ -11,10 +11,11 @@ export function DebugInfo() {
         bottom: '10px',
         backgroundColor: 'rgba(0, 0, 0, 0.7)',
         color: 'white',
-        padding: '8px 12px',
-        borderRadius: '4px',
-        fontSize: '12px',
+        padding: '6px 8px',
+        borderRadius: '2px',
+        fontSize: '6px',
         fontFamily: 'monospace',
+        textTransform: 'uppercase',
       }}
       className="w-fit">
       <div>
