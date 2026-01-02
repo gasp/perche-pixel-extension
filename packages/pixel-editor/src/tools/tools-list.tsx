@@ -3,7 +3,7 @@ import {
   Brush,
   Move,
   Eraser,
-  TreePine,
+  Stamp,
   Pipette,
   PaintBucket,
   FileQuestionMark,
@@ -29,7 +29,7 @@ const getIcon = (icon: string) => {
     case 'Eraser':
       return <Eraser />
     case 'TreePine':
-      return <TreePine />
+      return <Stamp />
     case 'Pipette':
       return <Pipette />
     case 'PaintBucket':
