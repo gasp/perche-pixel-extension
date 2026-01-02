@@ -26,7 +26,7 @@ jobs:
 
       - name: Rename zip file
         run: |
-          cd dist-zip
+          cd /home/runner/work/perche-pixel-extension/perche-pixel-extension/dist-zip
           mv *.zip perche-pixel-extension-${{ steps.tag.outputs.TAG_NAME }}.zip
 
       - name: Create Release

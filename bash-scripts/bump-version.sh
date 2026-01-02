@@ -79,7 +79,7 @@ echo -e "  Updated: $ROOT_PACKAGE_JSON"
 
 # Stage the changes
 echo -e "${YELLOW}Staging changes...${NC}"
-git add .
+git add package.json
 
 # Check if there are changes to commit
 if git diff --cached --quiet; then
