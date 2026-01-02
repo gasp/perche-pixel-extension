@@ -18,6 +18,11 @@ export const TOOLS: ToolDetails[] = [
     icon: 'Pencil',
   },
   {
+    id: ToolType.PIPETTE,
+    name: 'Pipette (I)',
+    icon: 'Pipette',
+  },
+  {
     id: ToolType.BRUSH,
     name: 'Brush (B)',
     icon: 'Brush',
@@ -36,11 +41,6 @@ export const TOOLS: ToolDetails[] = [
     id: ToolType.STAMP,
     name: 'Stamp',
     icon: 'TreePine',
-  },
-  {
-    id: ToolType.PIPETTE,
-    name: 'Pipette (I)',
-    icon: 'Pipette',
   },
   {
     id: ToolType.PAINT_BUCKET,

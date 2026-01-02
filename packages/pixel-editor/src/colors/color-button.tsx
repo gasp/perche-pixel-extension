@@ -18,7 +18,7 @@ export function ColorButton({
     <button
       title={name}
       onClick={onClick}
-      className={`h-[8px] w-[8px] transition-none ${
+      className={`h-[16px] w-[16px] transition-none ${
         isSelected
           ? 'border-[1px] border-white'
           : 'border-[1px] border-transparent'

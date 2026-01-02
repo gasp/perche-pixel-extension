@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 interface AppLayoutProps {
   children: ReactNode
@@ -16,8 +16,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         height: '100vh',
         backgroundColor: '#f5f5f5',
         overflow: 'hidden',
-      }}
-    >
+      }}>
       {children}
     </div>
   )

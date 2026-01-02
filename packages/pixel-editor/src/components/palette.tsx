@@ -92,7 +92,7 @@ export function Palette({ children, title, paletteId }: OwnProps) {
         {isCollapsed && title ? (
           <div className="flex h-full w-full items-center justify-center bg-[#dcdcdc] px-2">
             <span className="text-[6px] font-bold uppercase tracking-wide text-black">
-              {DEVICE_PIXEL_RATIO} {title}
+              {title}
             </span>
           </div>
         ) : (

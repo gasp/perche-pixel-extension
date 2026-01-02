@@ -8,7 +8,7 @@ type OwnProps = {
 
 export function ColorList({ onColorSelect, selectedColorId }: OwnProps) {
   return (
-    <div className="flex flex-wrap gap-0 p-[2px]" style={{ width: '96px' }}>
+    <div className="flex flex-wrap gap-0 p-[2px]" style={{ width: '84px' }}>
       {colors
         .filter(color => color.id !== 0) // Skip transparent color
         .map(color => (

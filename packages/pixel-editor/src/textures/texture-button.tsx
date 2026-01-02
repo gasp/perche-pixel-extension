@@ -36,12 +36,11 @@ export function TextureButton({
     <button
       title={name}
       onClick={onClick}
-      className={`h-[16px] w-[24px] transition-none ${
+      className={`h-[16px] w-[32px] transition-none ${
         isSelected
           ? 'border-[1px] border-white'
           : 'border-[1px] border-transparent'
-      }`}
-    >
+      }`}>
       <canvas
         ref={canvasRef}
         width={12}

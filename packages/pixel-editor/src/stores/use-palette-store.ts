@@ -35,27 +35,27 @@ const defaultPalettes: Record<PaletteId, PaletteState> = {
   color: {
     position: { x: 60, y: 20 },
     zIndex: BASE_Z_INDEX + 4,
-    isCollapsed: false,
+    isCollapsed: true,
   },
   texture: {
     position: { x: 60, y: 100 },
     zIndex: BASE_Z_INDEX + 3,
-    isCollapsed: false,
+    isCollapsed: true,
   },
   'brush-size': {
-    position: { x: 20, y: 120 },
+    position: { x: 60, y: 120 },
     zIndex: BASE_Z_INDEX + 2,
     isCollapsed: false,
   },
   tile: {
-    position: { x: 60, y: 180 },
+    position: { x: 60, y: 80 },
     zIndex: BASE_Z_INDEX + 1,
-    isCollapsed: false,
+    isCollapsed: true,
   },
   stamp: {
     position: { x: 60, y: 220 },
     zIndex: BASE_Z_INDEX,
-    isCollapsed: false,
+    isCollapsed: true,
   },
 }
 

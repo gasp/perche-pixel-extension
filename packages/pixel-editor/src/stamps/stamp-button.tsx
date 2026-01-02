@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { StampPixel } from './stamps'
 
 export type StampButtonProps = {
@@ -8,6 +8,8 @@ export type StampButtonProps = {
   isSelected: boolean
 }
 
+const CANVAS_SIZES = [32, 64]
+
 export function StampButton({
   name,
   pixels,
@@ -15,6 +17,7 @@ export function StampButton({
   isSelected,
 }: StampButtonProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const [canvasSize, setCanvasSize] = useState<number>(12)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -34,10 +37,15 @@ export function StampButton({
 
     const stampWidth = maxX - minX + 1
     const stampHeight = maxY - minY + 1
+    const stampSize = Math.max(stampWidth, stampHeight)
 
-    // Calculate center offset to center the stamp in the 12x12 canvas
-    const offsetX = Math.floor((12 - stampWidth) / 2) - minX
-    const offsetY = Math.floor((12 - stampHeight) / 2) - minY
+    // calculate which canvas size to use
+    setCanvasSize(CANVAS_SIZES.find(size => stampSize <= size) || 32)
+    console.log('Canvas size selected:', canvasSize)
+
+    // Calculate center offset to center the stamp in the n×n canvas
+    const offsetX = Math.floor((canvasSize - stampWidth) / 2) - minX
+    const offsetY = Math.floor((canvasSize - stampHeight) / 2) - minY
 
     // Draw each pixel
     pixels.forEach(pixel => {
@@ -45,27 +53,31 @@ export function StampButton({
       const canvasY = pixel.y + offsetY
 
       // Only draw if within bounds
-      if (canvasX >= 0 && canvasX < 12 && canvasY >= 0 && canvasY < 12) {
+      if (
+        canvasX >= 0 &&
+        canvasX < canvasSize &&
+        canvasY >= 0 &&
+        canvasY < canvasSize
+      ) {
         ctx.fillStyle = `rgb(${pixel.rgb[0]}, ${pixel.rgb[1]}, ${pixel.rgb[2]})`
         ctx.fillRect(canvasX, canvasY, 1, 1)
       }
     })
-  }, [pixels])
+  }, [pixels, canvasSize])
 
   return (
     <button
-      title={name}
+      title={`${name} (${pixels.length} px)`}
       onClick={onClick}
-      className={`h-[24px] w-[24px] transition-none ${
+      className={`h-${canvasSize * 2} w-${canvasSize * 2} transition-none ${
         isSelected
           ? 'border-[1px] border-white'
           : 'border-[1px] border-transparent'
-      }`}
-    >
+      }`}>
       <canvas
         ref={canvasRef}
-        width={12}
-        height={12}
+        width={canvasSize}
+        height={canvasSize}
         className="h-full w-full"
         style={{ imageRendering: 'pixelated' }}
       />

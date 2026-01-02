@@ -8,7 +8,7 @@ type OwnProps = {
 
 export function TextureList({ onTextureSelect, selectedTextureId }: OwnProps) {
   return (
-    <div className="flex flex-wrap gap-0 p-[2px]" style={{ width: '80px' }}>
+    <div className="flex flex-wrap gap-0 p-[2px]" style={{ width: '68px' }}>
       {textures.map(texture => (
         <TextureButton
           key={texture.id}
