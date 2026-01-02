@@ -21,6 +21,7 @@ export type ContentEventMap = {
     source: string
     timestamp: number
   }
+  'editor:toggle:ui': Record<string, never>
   'editor:grid:data': {
     pixels: Array<{ x: number; y: number; color: string }>
   }

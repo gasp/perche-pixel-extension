@@ -5,6 +5,7 @@ import type { LoadTilePayload } from '@extension/pixel-editor'
 
 export default function App() {
   const [isVisible, setIsVisible] = useState(false)
+  const [isEditorUIVisible, setIsEditorUIVisible] = useState(true)
   const [tileCoords, setTileCoords] = useState<{ x: number; y: number } | null>(
     null,
   )
@@ -61,10 +62,17 @@ export default function App() {
       setTileCoords(null)
     })
 
+    // Listen for editor UI toggle events
+    const unsubscribeToggleUI = eventBus.on('editor:toggle:ui', () => {
+      console.log('🎨 Editor UI toggle event received')
+      setIsEditorUIVisible(prev => !prev)
+    })
+
     // Clean up listeners on unmount
     return () => {
       unsubscribeOpen()
       unsubscribeClose()
+      unsubscribeToggleUI()
     }
   }, [])
 
@@ -172,43 +180,51 @@ export default function App() {
   return (
     <div
       id="editor"
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black">
-      <div className="relative h-full w-full bg-white">
+      className={`fixed inset-0 z-50 flex items-center justify-center ${isEditorUIVisible ? 'bg-black' : 'pointer-events-none bg-transparent'}`}>
+      {/* Main Editor Container */}
+      <div
+        className={`relative h-full w-full ${isEditorUIVisible ? 'bg-white' : 'bg-transparent'}`}
+        style={{ pointerEvents: isEditorUIVisible ? 'auto' : 'none' }}>
         <div className="flex h-full flex-col">
-          <div className="flex items-center justify-between border-b border-gray-200 p-2">
-            <h1 className="text-sm font-bold">
-              Pixel Editor
-              {tileCoords && ` - Tile (${tileCoords.x}, ${tileCoords.y})`}
-              {pixelCoords && ` - Pixel (${pixelCoords.x}, ${pixelCoords.y})`}
-            </h1>
-            <div className="flex gap-2">
-              <button
-                onClick={handleSave}
-                disabled={saveStatus === 'saving'}
-                className={`rounded px-2 py-1 text-sm font-semibold text-white transition-colors ${
-                  saveStatus === 'saving'
-                    ? 'cursor-not-allowed bg-gray-400'
-                    : saveStatus === 'success'
-                      ? 'bg-green-600 hover:bg-green-700'
-                      : saveStatus === 'error'
-                        ? 'bg-red-600 hover:bg-red-700'
-                        : 'bg-green-500 hover:bg-green-600'
-                }`}
-                type="button">
-                {saveStatus === 'saving' && '⏳ Saving...'}
-                {saveStatus === 'success' && '✅ Saved!'}
-                {saveStatus === 'error' && '❌ Error'}
-                {saveStatus === 'idle' && 'Save'}
-              </button>
-              <button
-                onClick={handleClose}
-                className="rounded bg-red-500 px-2 py-1 font-semibold text-white hover:bg-red-600"
-                type="button">
-                Close
-              </button>
+          {isEditorUIVisible && (
+            <div className="flex items-center justify-between border-b border-gray-200 bg-white p-2">
+              <h1 className="text-sm font-bold">
+                Pixel Editor
+                {tileCoords && ` - Tile (${tileCoords.x}, ${tileCoords.y})`}
+                {pixelCoords && ` - Pixel (${pixelCoords.x}, ${pixelCoords.y})`}
+              </h1>
+              <div className="flex gap-2">
+                <button
+                  onClick={handleSave}
+                  disabled={saveStatus === 'saving'}
+                  className={`rounded px-2 py-1 text-sm font-semibold text-white transition-colors ${
+                    saveStatus === 'saving'
+                      ? 'cursor-not-allowed bg-gray-400'
+                      : saveStatus === 'success'
+                        ? 'bg-green-600 hover:bg-green-700'
+                        : saveStatus === 'error'
+                          ? 'bg-red-600 hover:bg-red-700'
+                          : 'bg-green-500 hover:bg-green-600'
+                  }`}
+                  type="button">
+                  {saveStatus === 'saving' && '⏳ Saving...'}
+                  {saveStatus === 'success' && '✅ Saved!'}
+                  {saveStatus === 'error' && '❌ Error'}
+                  {saveStatus === 'idle' && 'Save'}
+                </button>
+                <button
+                  onClick={handleClose}
+                  className="rounded bg-red-500 px-2 py-1 font-semibold text-white hover:bg-red-600"
+                  type="button">
+                  Close
+                </button>
+              </div>
             </div>
-          </div>
-          <div className="flex-1 overflow-hidden">
+          )}
+          <div
+            className="flex-1 overflow-hidden"
+            id="pixel-editor-container"
+            style={{ display: isEditorUIVisible ? 'block' : 'none' }}>
             <PixelEditor />
           </div>
         </div>

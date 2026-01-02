@@ -22,8 +22,8 @@ const createDebugPanel = (): HTMLDivElement => {
   panel.style.cssText = `
     position: fixed;
     bottom: 10px;
-    right: 10px;
-    z-index: 50;
+    right: 210px;
+    z-index: 51;
     background: rgba(30, 30, 30, 0.95);
     border: 1px solid #4ade80;
     border-radius: 4px;
@@ -214,6 +214,12 @@ const debugActions: DebugAction[] = [
       timestamp: Date.now(),
     }),
     description: 'Trigger editor close event',
+  },
+  {
+    label: '👁️ Toggle Editor UI',
+    event: 'editor:toggle:ui',
+    payload: () => ({}),
+    description: 'Toggle editor UI visibility',
   },
   {
     label: '🎨 Paint Click',
