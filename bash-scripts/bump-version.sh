@@ -16,10 +16,17 @@ NC='\033[0m' # No Color
 
 # Get the root package.json path
 ROOT_PACKAGE_JSON="./package.json"
+MANIFEST_PACKAGE_JSON="./chrome-extension/package.json"
 
 # Check if package.json exists
 if [ ! -f "$ROOT_PACKAGE_JSON" ]; then
-  echo -e "${RED}Error: package.json not found in current directory${NC}"
+  echo -e "${RED}Error: package.json not found${NC}"
+  exit 1
+fi
+
+# Check if package.json exists
+if [ ! -f "$MANIFEST_PACKAGE_JSON" ]; then
+  echo -e "${RED}Error: $MANIFEST_PACKAGE_JSON not found${NC}"
   exit 1
 fi
 
@@ -72,14 +79,16 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
   exit 0
 fi
 
-# Update version in root package.json only
-echo -e "${YELLOW}Updating version in root package.json...${NC}"
+echo -e "${YELLOW}Updating version package.json...${NC}"
 perl -i -pe"s/\"version\": \"$CURRENT_VERSION\"/\"version\": \"$NEW_VERSION\"/" "$ROOT_PACKAGE_JSON"
 echo -e "  Updated: $ROOT_PACKAGE_JSON"
+perl -i -pe"s/\"version\": \"$CURRENT_VERSION\"/\"version\": \"$NEW_VERSION\"/" "$MANIFEST_PACKAGE_JSON"
+echo -e "  Updated: $MANIFEST_PACKAGE_JSON"
 
 # Stage the changes
 echo -e "${YELLOW}Staging changes...${NC}"
 git add package.json
+git add chrome-extension/package.json
 
 # Check if there are changes to commit
 if git diff --cached --quiet; then
